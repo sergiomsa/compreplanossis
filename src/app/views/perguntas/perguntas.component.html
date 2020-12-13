@@ -1,0 +1,152 @@
+<!-- pesquisa -->
+<div class="m-1">
+  <form [formGroup]="filterForm">
+    <div fxFlex="100" fxFlex.gt-xs="60" class="pr-1">
+      <div class="pb-1">
+        <mat-form-field class="full-width default-bg">
+          <mat-select name="pesquisarpor" id="pesquisarpor" placeholder="Por" class="mb-1"
+            [formControl]="filterForm.controls['pesquisarpor']">
+            <mat-option value="pergunta" ngDefaultControl>Pergunta</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div fxFlex="100" fxFlex.gt-xs="60" class="pr-1">
+      <div class="pb-1">
+        <mat-form-field class="full-width default-bg">
+          <input matInput name="searchProduct" placeholder="Pesquisar" class="mb-1"
+            [formControl]="filterForm.controls['search']">
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
+  <button mat-mini-fab color="primary" class="mr-1" (click)="pesquisarPerguntas()" [disabled]="filterForm.invalid"
+    matTooltip="Pesquisar pergunta">
+    <mat-icon>search</mat-icon>
+  </button>
+  <button mat-mini-fab color="primary" class="mr-1" (click)="todasPerguntas()" atTooltip="Pesquisar pergunta">
+    <mat-icon>list</mat-icon>
+  </button>
+  <span fxFlex="20px"></span>
+  <button mat-mini-fab color="warn" class="mr-1" (click)="abrirFormulario(0)" [disabled]="!InserirContratacao"
+    *ngIf="!formulario" matTooltip="Inserir pergunta">
+    <mat-icon>create</mat-icon>
+  </button>
+</div>
+<!-- fim pesquisa -->
+
+<!-- Formulário -->
+<div *ngIf="formulario">
+  <mat-card class="p-0">
+    <mat-card-content>
+      <mat-card-header class="pb-1">
+        <div *ngIf="id==0">
+          <h5 class="pb-1">
+            <strong> Nova </strong> pergunta</h5>
+          <mat-divider></mat-divider>
+        </div>
+        <div *ngIf="id>0">
+          <h5 class="pb-1">
+            <strong> Alterar </strong> pergunta</h5>
+          <mat-divider></mat-divider>
+        </div>
+      </mat-card-header>
+      <form [formGroup]="perguntaForm" (ngSubmit)="submit()">
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutWrap="wrap">
+          <div fxFlex="100" class="pr-1 pt-1">
+            <mat-form-field class="full-width">
+              <input matInput name="pergunta" id="pergunta" [formControl]="perguntaForm.controls['pergunta']"
+                placeholder="Pergunta">
+            </mat-form-field>
+            <small
+              *ngIf="perguntaForm.controls['pergunta'].hasError('required') && perguntaForm.controls['pergunta'].touched"
+              class="form-error-msg">
+              A pergunta é obrigatório
+            </small>
+            <small
+              *ngIf="perguntaForm.controls['pergunta'].hasError('maxlength') && perguntaForm.controls['pergunta'].touched"
+              class="form-error-msg"> Máximo 200 caracteres
+            </small>
+          </div>
+
+          <div fxFlex="100" class="pr-1 pt-1">
+            <mat-slider color="primary" [step]="5" [max]="100" [min]="5" [style.width]="'100%'" [thumbLabel]="true"
+              name="sequencia" id="sequencia" [formControl]="perguntaForm.controls['sequencia']">
+              <small
+                *ngIf="perguntaForm.controls['sequencia'].hasError('sequencia') && perguntaForm.controls['sequencia'].touched"
+                class="form-error-msg">
+                A sequência é obrigatória
+              </small>
+            </mat-slider>
+          </div>
+
+          <div fxFlex="100" class="pt-1">
+            <mat-form-field class="full-width">
+              <mat-select name="operadora_id" formControlName="operadora_id" placeholder="Disponível para as operadoras" class="mb-1" multiple>
+                <mat-option *ngFor="let operadora of operadoras" [value]="operadora.id">
+                  {{operadora.operadora}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <span matPrefix fxFlex="100" class="pr-1">
+            <mat-slide-toggle name="ativo" id="ativo" class="mt-1"
+              [formControl]="perguntaForm.controls['ativo']" placeholder="Ativo"
+              labelPosition="before">Ativo?&nbsp;&nbsp;
+            </mat-slide-toggle>
+          </span>
+
+          <div fxFlex="100" class="mt-1">
+            <button mat-raised-button color="primary" [disabled]="perguntaForm.invalid"
+              matTooltip="Salvar pergunta">Salvar</button>
+            <span fxFlex></span>
+            <button mat-stroked-button color="primary" type="button" (click)="cancelarFormulario()"
+              matTooltip="Voltar">Cancelar</button>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+<!-- fim formulário -->
+
+<!-- Tabela  -->
+<div *ngIf="perguntas.length && !formulario">
+  <mat-card class="p-0">
+    <mat-card-content class="p-0">
+      <ngx-datatable class="material ml-0 mr-0" [rows]="perguntas" [columnMode]="'flex'" [headerHeight]="50"
+        [footerHeight]="50" [externalPaging]="true" [count]="page_totalElements" [offset]="page_pageNumber"
+        [limit]="page_size" (page)='paginacao($event)' [rowHeight]="40">
+        <ngx-datatable-column name="Pergunta" [flexGrow]="3">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row?.pergunta }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Sequência" [flexGrow]="1">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row?.sequencia }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Ativo" prop="ativo" [flexGrow]="1">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ traduzBoolean(row?.ativo) }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Ação" [flexGrow]="1">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <button mat-icon-button mat-sm-button color="primary" class="mr-1" (click)="abrirFormulario(row.id )"
+              [disabled]="!AlterarContratacao" matTooltip="Alterar pergunta">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button mat-sm-button color="warn" (click)="removerContratacao(row)"
+              [disabled]="!ExcluirContratacao || row?.planos_count > 0" matTooltip="Excluir pergunta">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </mat-card-content>
+  </mat-card>
+</div>
+<!-- fim tabela -->

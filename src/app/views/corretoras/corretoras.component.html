@@ -1,0 +1,250 @@
+<!-- pesquisa -->
+<div class="m-1">
+  <form [formGroup]="filterForm">
+    <div fxFlex="100" fxFlex.gt-xs="60" class="pr-1">
+      <div class="pb-1">
+        <mat-form-field class="full-width default-bg">
+          <mat-select name="pesquisarpor" id="pesquisarpor" placeholder="Por" class="mb-1" [formControl]="filterForm.controls['pesquisarpor']">
+            <mat-option value="cnpj" ngDefaultControl>CNPJ</mat-option>
+            <mat-option value="corretora" ngDefaultControl>Corretora</mat-option>
+            <mat-option value="equipe" ngDefaultControl>Equipe</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div fxFlex="100" fxFlex.gt-xs="60" class="pr-1">
+      <div class="pb-1">
+        <mat-form-field class="full-width default-bg">
+          <input matInput name="searchProduct" placeholder="Pesquisar" class="mb-1" [formControl]="filterForm.controls['search']">
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
+  <button mat-mini-fab color="primary" class="mr-1" (click)="pesquisarCorretoras()" [disabled]="filterForm.invalid"
+    matTooltip="Pesquisar Corretoras">
+    <mat-icon>search</mat-icon>
+  </button>
+  <button mat-mini-fab color="primary" class="mr-1" (click)="todasCorretoras()" matTooltip="Listar todas Situaões">
+    <mat-icon>list</mat-icon>
+  </button>
+  <span fxFlex="10px"></span>
+  <button mat-mini-fab color="warn" class="mr-1" (click)="abrirFormulario(0)" [disabled]="!InserirCorretora" *ngIf="!formulario"
+    matTooltip="Inserir novo corretora">
+    <mat-icon>create</mat-icon>
+  </button>
+</div>
+<!-- fim pesquisa -->
+
+<!-- Formulário -->
+<div fxLayout="row" fxLayoutWrap="wrap">
+  <div fxFlex="100" fxFlex.gt-xs="100">
+    <mat-card *ngIf="formulario">
+      <mat-card-content>
+        <mat-card-title>
+          <div class="pb-0">
+            <strong *ngIf="id==0">Nova corretora</strong>
+            <strong *ngIf="id>0">Revisar corretora</strong>
+          </div>
+          <mat-divider></mat-divider>
+        </mat-card-title>
+        <form [formGroup]="corretoraForm" (ngSubmit)="submit()">
+          <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutWrap="wrap">
+
+           <div fxFlex="50" class="pr-1">
+                  <mat-form-field class="full-width">
+                    <input matInput name="cnpj" id="cnpj" [textMask]="{mask: maskcnpj}" [formControl]="corretoraForm.controls['cnpj']"
+                      placeholder="CNPJ">
+                  </mat-form-field>
+                  <small *ngIf="corretoraForm.controls['cnpj'].hasError('required') && corretoraForm.controls['cnpj'].touched"
+                    class="form-error-msg">
+                    CNPJ obrigatório </small>
+           </div>
+
+            <div fxFlex="50" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="corretora" id="corretora" [formControl]="corretoraForm.controls['corretora']"
+                  placeholder="Nome">
+              </mat-form-field>
+              <small *ngIf="corretoraForm.controls['corretora'].hasError('required') && corretoraForm.controls['corretora'].touched"
+                class="form-error-msg">
+                O nome da corretora é obrigatório
+              </small>
+            </div>
+
+            <div fxFlex="50" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput type="email" name="email" id="email" [formControl]="corretoraForm.controls['email']"
+                  placeholder="Email">
+              </mat-form-field>
+              <small *ngIf="corretoraForm.controls['email'].hasError('required') && corretoraForm.controls['email'].touched"
+                class="form-error-msg">
+                E-mail do associado é obrigatório
+              </small>
+              <small *ngIf="corretoraForm.controls['email'].hasError('email') && corretoraForm.controls['email'].touched"
+                class="form-error-msg">
+                E-mail inválido
+              </small>
+            </div>
+
+			
+			      <div fxFlex="50" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="contato" id="contato" [formControl]="corretoraForm.controls['contato']"
+                  placeholder="Contato">
+              </mat-form-field>
+            </div>
+			
+            <div fxFlex="50" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="telefone" id="telefone" [textMask]="{mask: masktelefone}" [formControl]="corretoraForm.controls['telefone']"
+                  placeholder="Telefone Celular">
+              </mat-form-field>
+            </div>
+
+            <div fxFlex="50" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="cep" id="cep" [textMask]="{mask: maskcep}" (change)="obterCep()" [formControl]="corretoraForm.controls['cep']"
+                  placeholder="Cep">
+              </mat-form-field>
+              <small *ngIf="corretoraForm.controls['cep'].hasError('required') && corretoraForm.controls['cep'].touched"
+                class="form-error-msg">
+                CEP obrigatório </small>
+            </div>
+
+            <div fxFlex="50" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="logradouro" id="logradouro" [formControl]="corretoraForm.controls['logradouro']"
+                  placeholder="Logradouro">
+              </mat-form-field>
+              <small *ngIf="corretoraForm.controls['logradouro'].hasError('required') && corretoraForm.controls['logradouro'].touched"
+                class="form-error-msg"> Logradouro Obrigatório </small>
+            </div>
+
+            <div fxFlex="50" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput type="number" name="numero" id="numero" [formControl]="corretoraForm.controls['numero']"
+                  placeholder="Numero">
+              </mat-form-field>
+              <small *ngIf="corretoraForm.controls['numero'].hasError('required') && corretoraForm.controls['numero'].touched"
+                class="form-error-msg">
+                Numero obrigatório </small>
+            </div>
+
+            <div fxFlex="50" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="complemento" id="complemento" [formControl]="corretoraForm.controls['complemento']"
+                  placeholder="Complemento">
+              </mat-form-field>
+            </div>
+
+            <div fxFlex="50" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="bairro" id="bairro" [formControl]="corretoraForm.controls['bairro']" placeholder="Bairro">
+              </mat-form-field>
+              <small *ngIf="corretoraForm.controls['bairro'].hasError('required') && corretoraForm.controls['bairro'].touched"
+                class="form-error-msg">
+                Bairro obrigatório </small>
+            </div>
+
+            <div fxFlex="50" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="cidade" id="cidade" [formControl]="corretoraForm.controls['cidade']" placeholder="Cidade">
+              </mat-form-field>
+              <small *ngIf="corretoraForm.controls['cidade'].hasError('required') && corretoraForm.controls['cidade'].touched"
+                class="form-error-msg">
+                Cidade obrigatória </small>
+            </div>
+
+            <div fxFlex="50" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="estado" id="estado" [formControl]="corretoraForm.controls['estado']" placeholder="Estado">
+              </mat-form-field>
+              <small *ngIf="corretoraForm.controls['estado'].hasError('required') && corretoraForm.controls['estado'].touched"
+                class="form-error-msg">
+                Estado obrigatório </small>
+            </div>
+
+            <div fxFlex="50" class="pt-1">
+              <mat-form-field class="full-width">
+                <mat-select name="operadora_id" formControlName="operadora_id" placeholder="Vende plano(s) para a(s) operadora(s)" class="mb-1" multiple>
+                  <mat-option *ngFor="let operadora of operadoras" [value]="operadora.id">
+                    {{operadora.operadora}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div fxFlex="50" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="equipe" id="equipe" [formControl]="corretoraForm.controls['equipe']"
+                  placeholder="Equipe">
+              </mat-form-field>
+              <small *ngIf="corretoraForm.controls['equipe'].hasError('required') && corretoraForm.controls['equipe'].touched"
+                class="form-error-msg">
+                Equipe é obrigatória
+              </small>
+            </div>
+
+
+            <div fxFlex="100" class="mt-1">
+              <button mat-raised-button color="primary" class="mr-1 mt-1" [disabled]="corretoraForm.invalid">Salvar</button>
+              <span fxFlex></span>
+              <button mat-stroked-button color="primary" type="button" class="mt-1" (click)="cancelarFormulario()">Cancelar</button>
+            </div>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+
+<!-- Tabela  -->
+<div *ngIf="corretoras.length && !formulario">
+  <mat-card class="p-0">
+    <mat-card-content class="p-0">
+      <ngx-datatable class="material ml-0 mr-0" [rows]="corretoras" [columnMode]="'flex'" [headerHeight]="50"
+        [footerHeight]="50" [externalPaging]="true" [count]="page_totalElements" [offset]="page_pageNumber" [limit]="page_size"
+        (page)='paginacao($event)' [rowHeight]="'auto'">
+        <ngx-datatable-column name="CNPJ" [flexGrow]="1">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row?.cnpj }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Nome" [flexGrow]="2">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row?.corretora }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Telefone" [flexGrow]="1">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row?.telefone }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Email" [flexGrow]="1">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row?.email }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Equipe" [flexGrow]="1">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row?.equipe }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Ação" [flexGrow]="1">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <button mat-icon-button mat-sm-button color="primary" class="mr-1" (click)="abrirFormulario(row.id)"
+              [disabled]="!AlterarCorretora" matTooltip="Editar corretora">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button mat-sm-button color="warn" (click)="removerCorretora(row)" [disabled]="!ExcluirCorretora || podeExcluir(row)"
+              matTooltip="Excluir corretora">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </mat-card-content>
+  </mat-card>
+</div>
+<!-- fim tabela -->

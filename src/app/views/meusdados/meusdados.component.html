@@ -1,0 +1,207 @@
+<div fxLayout="row" fxLayoutWrap="wrap">
+  <div fxFlex="30" fxFlex.gt-md="300px" fxFlex.gt-sm="50">
+    <mat-card class="profile-sidebar mb-1 pb-0">
+      <div class="propic text-center">
+        <img [src]="foto" *ngIf="foto">
+      </div>
+      <div class="profile-title text-center mb-1">
+        <div class="main-title">{{meusdados?.name}}</div>
+        <div class="subtitle mb-05">{{meusdados?.email}}</div>
+        <div class="subtitle mb-05"></div>
+        <div class="subtitle mb-05" *ngFor="let role of meusdados?.roles">{{role.nome}}</div>
+      </div>
+    </mat-card>
+  </div>
+  <form [formGroup]="meusdadosForm" (ngSubmit)="submit()">
+  <mat-card class="p-0">
+    <mat-tab-group>
+      <mat-tab label="Perfil">
+        <mat-card-content class="mt-1">
+            <mat-form-field class="full-width">
+                <input matInput
+                name="nome"
+                id="nome"
+                placeholder="Nome"
+                [formControl]="meusdadosForm.controls['nome']">
+              </mat-form-field>
+              <mat-form-field class="full-width">
+                <input matInput
+                name="cargo"
+                id="cargo"
+                [formControl]="meusdadosForm.controls['cargo']"
+                placeholder="Cargo">
+              </mat-form-field>
+              <mat-form-field class="full-width">
+                <input matInput
+                type="email"
+                name="emailalternativo"
+                id="emailalternativo"
+                [formControl]="meusdadosForm.controls['emailalternativo']"
+                placeholder="Email alternativo">
+              </mat-form-field>
+              <mat-form-field class="full-width">
+                <input matInput
+                name="telefone"
+                id="telefone"
+                [textMask]="{mask: masktelefone}"
+                [formControl]="meusdadosForm.controls['telefone']"
+                placeholder="Telefone">
+              </mat-form-field>
+              <mat-form-field class="full-width">
+                <input matInput
+                name="telefone"
+                id="telefone"
+                [textMask]="{mask: maskcelular}"
+                [formControl]="meusdadosForm.controls['celular']"
+                placeholder="Celular">
+              </mat-form-field>
+        </mat-card-content>
+      </mat-tab>
+      <!--Tab de Endereço-->
+      <mat-tab label="Endereço">
+        <mat-card-content class="mt-1">
+            <mat-form-field class="full-width">
+                <input matInput
+                name="cep"
+                id="cep"
+                [textMask]="{mask: maskcep}"
+                [formControl]="meusdadosForm.controls['cep']"
+                (change)="obterCep()"
+                placeholder="Cep">
+              </mat-form-field>
+              <mat-form-field class="full-width">
+                <input matInput
+                name="logradouro"
+                id="logradouro"
+                [formControl]="meusdadosForm.controls['logradouro']"
+                placeholder="Logradouro">
+              </mat-form-field>
+              <mat-form-field class="full-width">
+                <input matInput
+                name="numero"
+                id="numero"
+                [formControl]="meusdadosForm.controls['numero']"
+                placeholder="Numero">
+              </mat-form-field>
+              <mat-form-field class="full-width">
+                <input matInput
+                name="complemento"
+                id="complemento"
+                [formControl]="meusdadosForm.controls['complemento']"
+                placeholder="Complemento">
+              </mat-form-field>
+              <mat-form-field class="full-width">
+                <input matInput
+                name="bairro"
+                id="bairro"
+                [formControl]="meusdadosForm.controls['bairro']"
+                placeholder="Bairro">
+              </mat-form-field>
+              <mat-form-field class="full-width">
+                <input matInput
+                name="cidade"
+                id="cidade"
+                [formControl]="meusdadosForm.controls['cidade']"
+                placeholder="Cidade">
+              </mat-form-field>
+              <mat-form-field class="full-width">
+                <input matInput
+                name="estado"
+                id="estado"
+                [formControl]="meusdadosForm.controls['estado']"
+                placeholder="Estado">
+              </mat-form-field>
+        </mat-card-content>
+      </mat-tab>
+      <!--Tab de Configuração-->
+      <mat-tab label="Configurações do Sistema">
+        <mat-card-content>
+          <div class="mb-1 mt-1">
+            <p>Alterar as cores do sistema.</p>
+            <mat-radio-group fxLayout="column" fxLayoutGap="4px" [formControl]="meusdadosForm.controls['tema']">
+              <mat-radio-button value="Indigo">Azul Celeste</mat-radio-button>
+              <mat-radio-button value="Blue">Azul</mat-radio-button>
+              <mat-radio-button value="Pink">Rosa</mat-radio-button>
+              <mat-radio-button value="Purple">Roxo</mat-radio-button>
+            </mat-radio-group>
+          </div>
+          <div class="mb-1 mt-1">
+            <!--Salas-->
+          </div>
+        </mat-card-content>
+      </mat-tab>
+      <mat-tab label="Segurança">
+        <mat-card-content class="mt-1">
+          <p>Altere a senha. Caso não queira alterar, apenas deixe em branco.</p>
+            <mat-form-field class="full-width">
+              <input matInput
+              name="senha"
+              id="senha"
+              [formControl]="meusdadosForm.controls['senha']"
+              placeholder="Senha">
+            </mat-form-field>
+            <mat-form-field class="full-width">
+              <input matInput
+              name="confsenha"
+              id="confsenha"
+              [formControl]="meusdadosForm.controls['confsenha']"
+              placeholder="Confirme a senha">
+            </mat-form-field>
+        </mat-card-content>
+      </mat-tab>
+      <!--Tab envio de foto-->
+      <mat-tab label="Foto perfil">
+        <mat-card-content>
+          <div class="mb-1 mt-1">
+            <p>Foto do Perfil</p>
+            <input type="file" ng2FileSelect [uploader]="uploader" />
+          </div>
+          <div class="mb-1">
+            <div ng2FileDrop [ngClass]="{'dz-file-over': hasBaseDropZoneOver}" [uploader]="uploader" (fileOver)="fileOverBase($event)"
+              class="fileupload-drop-zone">
+              Arraste e solte aqui sua foto no formato png/jpeg
+            </div>
+          </div>
+          <table class="default-table mat-box-shadow" style="width: 100%">
+            <thead>
+              <tr>
+                <th width="30%">Nome</th>
+                <th>Tamanho</th>
+                <th>Progresso</th>
+                <th>Status</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="uploader.queue.length; else tableNoData">
+              <tr *ngFor="let item of uploader.queue">
+                <td>{{ item?.file?.name }}</td>
+                <td nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
+                <td>
+                  <div class="progress" style="margin-bottom: 0;">
+                    <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
+                    <mat-progress-bar class="" color="primary" mode="determinate" [value]="item.progress">
+                    </mat-progress-bar>
+                  </div>
+                </td>
+                <td class="">
+                  <mat-icon *ngIf="item.isSuccess">check</mat-icon>
+                  <mat-icon *ngIf="item.isCancel" color="accent">cancel</mat-icon>
+                  <mat-icon *ngIf="item.isError" color="warn">error</mat-icon>
+                </td>
+                <td nowrap>
+                  <button mat-raised-button class="mat-primary" (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">Enviar</button>
+                  <button mat-raised-button class="mat-accent" (click)="item.cancel()" [disabled]="!item.isUploading">Canelar</button>
+                  <button mat-raised-button class="mat-warn" (click)="item.remove()">Remover</button>
+                </td>
+              </tr>
+            </tbody>
+            <ng-template #tableNoData>
+              <p [ngStyle]="{padding: '0 1.2rem'}">Não há fotos para serem carregadas</p>
+            </ng-template>
+          </table>
+        </mat-card-content>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card>
+  <button mat-raised-button color="primary" class="mt-05 ml-1" [disabled]="meusdadosForm.invalid">Atualizar</button>
+  </form>

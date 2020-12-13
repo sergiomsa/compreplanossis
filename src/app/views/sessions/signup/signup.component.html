@@ -1,0 +1,95 @@
+<div class="page-wrap height-100 mat-bg-primary">
+  <div class="session-form-hold">
+    <mat-progress-bar mode="determinate" class="session-progress"></mat-progress-bar>
+    <mat-card>
+      <mat-card-content>
+        <div class="text-center pb-1">
+          <img src="assets/images/logo-full.png" alt="" class="mb-05">
+          <p class="text-muted m-0">Criar nova conta</p>
+        </div>
+        <form [formGroup]="signupForm"  (ngSubmit)="signup()">
+		
+		  <div class="">
+            <mat-form-field class="full-width">
+              <input
+                matInput
+                type="text"
+                name="username"
+                [formControl]="signupForm.controls['username']"
+                placeholder="Nome"
+                value="">
+            </mat-form-field>
+            <small 
+              *ngIf="signupForm.controls['username'].hasError('required') && signupForm.controls['username'].touched" 
+              class="form-error-msg"> Nome é obrigatório </small>
+          </div>
+
+		  
+          <div class="">
+            <mat-form-field class="full-width">
+              <input
+                matInput
+                type="email"
+                name="email"
+                [formControl]="signupForm.controls['email']"
+                placeholder="E-mail"
+                value="">
+            </mat-form-field>
+            <small 
+              *ngIf="signupForm.controls['email'].hasError('required') && signupForm.controls['email'].touched" 
+              class="form-error-msg"> E-mail é obrigatório </small>
+
+              <small 
+                *ngIf="signupForm.controls['email'].hasError('email') && signupForm.controls['email'].touched" 
+                class="form-error-msg"> E-mail inválido </small>
+          </div>
+
+          <div class="">
+            <mat-form-field class="full-width">
+              <input 
+                type="password"
+                name="password"
+                matInput
+                [formControl]="signupForm.controls['password']"
+                placeholder="Senha" 
+                value="">
+            </mat-form-field>
+            <small 
+              *ngIf="signupForm.controls['password'].hasError('required') && signupForm.controls['password'].touched" 
+              class="form-error-msg"> Senha é obrigatória </small>
+          </div>
+          
+          <div class="">
+            <mat-form-field class="full-width">
+              <input
+                type="password"
+                name="confirmPassword"
+                matInput
+                [formControl]="signupForm.controls['confirmPassword']"
+                placeholder="Confirmar senha"
+                value="">
+            </mat-form-field>
+            <small *ngIf="signupForm.controls['confirmPassword'].hasError('required') && signupForm.controls['confirmPassword'].touched" class="form-error-msg">Confirmar senha é obrigatória.</small>
+            <small *ngIf="signupForm.controls['confirmPassword'].hasError('equalTo')" class="form-error-msg">Senha e confirmar senha não confere.</small>
+          </div>
+          
+          <div class="pb-1">
+            <mat-checkbox
+              name="agreed"
+              [formControl]="signupForm.controls['agreed']"
+              class="pb-1">Eu li e concordo com os termos de serviço.</mat-checkbox>
+
+              <small 
+                *ngIf="signupForm.controls['agreed'].hasError('agreed') && signupForm.controls['agreed'].touched" 
+                class="form-error-msg"> Você deve concordar com os termos e condições </small>
+          </div>
+
+          <button mat-raised-button class="mat-primary full-width mb-1" [disabled]="signupForm.invalid">Nova conta</button>
+          <div class="text-center">
+            <a [routerLink]="'/sessions/signin'" class="mat-primary text-center full-width">Entrar com uma conta existente</a>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

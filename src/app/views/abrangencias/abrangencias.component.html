@@ -1,0 +1,137 @@
+<div class="shop-wrap" fxLayout="row" fxLayoutWrap="wrap">
+  <!-- Filters -->
+  <!-- Right side -->
+  <div class="full-width">
+    <!-- Search Form -->
+    <div fxLayout="row" fxLayout.lt-sm="column" class="shop-top-toolbar">
+      <form [formGroup]="filterForm">
+        <div fxFlex="100" fxFlex.gt-xs="60" class="pr-1">
+          <div class="pb-1">
+            <mat-form-field class="full-width default-bg">
+              <mat-select name="pesquisarpor" id="pesquisarpor" placeholder="Por" class="mb-1" [formControl]="filterForm.controls['pesquisarpor']">
+                <mat-option value="abrangencia" ngDefaultControl>Abrangência</mat-option>
+                <mat-option value="situacao" ngDefaultControl>Situação</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div fxFlex="100" fxFlex.gt-xs="60" class="pr-1">
+          <div class="pb-1">
+            <mat-form-field class="full-width default-bg">
+              <input matInput name="searchProduct" placeholder="Pesquisar" class="mb-1" [formControl]="filterForm.controls['search']">
+            </mat-form-field>
+          </div>
+        </div>
+      </form>
+      <button mat-mini-fab color="primary" class="mr-1" (click)="pesquisarAbrangencias()" [disabled]="filterForm.invalid" matTooltip="Pesquisar Abrangência">
+        <mat-icon>search</mat-icon>
+      </button>
+      <button mat-mini-fab color="primary" class="mr-1" (click)="todosAbrangencias()" matTooltip="Listar todas Abrangência"><mat-icon>list</mat-icon></button>
+      <span fxFlex="20px"></span>
+      <button mat-mini-fab color="warn" class="mr-1" (click)="abrirFormulario(0)" [disabled]="!InserirAbrangencia" *ngIf="!formulario"
+        matTooltip="Inserir Abrangência">
+        <mat-icon>create</mat-icon>
+      </button>
+    </div>
+    <!-- fim pesquisa -->
+
+    <!-- Formulário -->
+    <div *ngIf="formulario">
+      <mat-card class="p-0" fxFlex="100">
+        <mat-card-content>
+          <mat-card-header class="pb-1">
+            <div *ngIf="id==0">
+              <h5 class="pb-1">
+                <strong> Nova </strong> abrangência</h5>
+              <mat-divider></mat-divider>
+            </div>
+            <div *ngIf="id>0">
+              <h5 class="pb-1">
+                <strong> Alterar </strong> abrangência</h5>
+              <mat-divider></mat-divider>
+            </div>
+          </mat-card-header>
+          <form [formGroup]="abrangenciaForm" (ngSubmit)="submit()">
+            <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutWrap="wrap">
+
+              <div fxFlex="100" class="pr-1 pt-1 mt-1">
+                <mat-form-field class="full-width">
+                  <input matInput name="abrangencia" id="abrangencia" [formControl]="abrangenciaForm.controls['abrangencia']" placeholder="Abrangência">
+                </mat-form-field>
+                <small *ngIf="abrangenciaForm.controls['abrangencia'].hasError('required') && abrangenciaForm.controls['abrangencia'].touched"
+                  class="form-error-msg">
+                  Abrangência é obrigatória </small>
+              </div>
+
+              <div fxFlex="100" class="pr-1 mt-1">
+                <div class="alig">
+                  <mat-form-field class="full-width">
+                    <mat-select name="situacao" [formControl]="abrangenciaForm.controls['situacao']" placeholder="Situação" class="mb-1">
+                      <mat-option value="Ativo" ngDefaultControl>Ativo</mat-option>
+                      <mat-option value="Inativo" ngDefaultControl>Inativo</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <small *ngIf="abrangenciaForm.controls['situacao'].hasError('required') && abrangenciaForm.controls['situacao'].touched"
+                    class="form-error-msg">
+                    A situação é obrigatório </small>
+                </div>
+              </div>
+              <div fxFlex="100" class="mt-1">
+                <button mat-raised-button color="primary" [disabled]="abrangenciaForm.invalid">Salvar</button>
+                <span fxFlex></span>
+                <button mat-stroked-button color="primary" type="button" (click)="cancelarFormulario()">Cancelar</button>
+              </div>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <!-- fim formulário -->
+    <!-- Tabela  -->
+    <div *ngIf="abrangencias.length && !formulario">
+      <mat-card class="p-0" fxFlex="30">
+        <mat-card-content class="p-0">
+          <ngx-datatable class="material ml-0 mr-0" [rows]="abrangencias" [columnMode]="'flex'" [headerHeight]="50" [footerHeight]="50"
+            [externalPaging]="true" 
+            [count]="page_totalElements" 
+            [offset]="page_pageNumber" 
+            [limit]="page_size" 
+            (page)='paginacao($event)'
+            [selected]="selectedAbrangencia"
+            [selectionType]="'single'"
+            (select)='onSelectAbrangencia($event)'
+            [rowHeight]="40" [messages]="messages">
+            <ngx-datatable-column name="Abrangência" [flexGrow]="4">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{ row?.abrangencia }}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Situação" [flexGrow]="2">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{ row?.situacao }}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Ação" [flexGrow]="2">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <button mat-icon-button mat-sm-button color="primary" class="mr-1" (click)="abrirFormulario(row.id )" [disabled]="!AlterarAbrangencia"
+                  matTooltip="Alterar abrangência">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button mat-sm-button color="warn" (click)="removerAbrangencia(row)" [disabled]="!ExcluirAbrangencia || row?.planos_count > 0 || row?.areasdeatuacaoestado_count
+              > 0" matTooltip="Excluir abrangência">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </ng-template>
+            </ngx-datatable-column>
+          </ngx-datatable>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="p-0" fxFlex="70">
+        <mat-card-content class="p-0">
+            <app-areadeatuacaoestados [abrangencia_id]="abrangencia_id" *ngIf="abrangencia_id > 0">></app-areadeatuacaoestados>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <!-- fim tabela -->
+  </div>
+</div>

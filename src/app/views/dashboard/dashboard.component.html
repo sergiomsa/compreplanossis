@@ -1,0 +1,112 @@
+<div class="m-1">
+  <form [formGroup]="filterForm">
+    <div fxFlex="100" fxFlex.gt-xs="10" class="pr-1">
+      <div class="pb-1">
+        <mat-form-field class="full-width default-bg">
+          <mat-select (selectionChange)="obterResumoFixa()" name="tipodeplano" id="tipodeplano"
+            placeholder="Tipo de plano" class="mb-1" [formControl]="filterForm.controls['tipodeplano']">
+            <mat-option value="0" ngDefaultControl>Todos</mat-option>
+            <mat-option value="4" ngDefaultControl>Odontológico</mat-option>
+            <mat-option value="6" ngDefaultControl>Plano de Saúde</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div fxFlex="100" fxFlex.gt-xs="15" class="pr-1">
+      <div class="pb-1">
+        <mat-form-field class="full-width default-bg">
+          <mat-select (selectionChange)="obterResumoFixa()" name="abrangencia" id="abrangencia"
+            placeholder="Abrangência" class="mb-1" [formControl]="filterForm.controls['abrangencia']">
+            <mat-option value="0" ngDefaultControl>Todas</mat-option>
+            <mat-option value="1" ngDefaultControl>Nacional</mat-option>
+            <mat-option value="2" ngDefaultControl>Municípios MG e ES</mat-option>
+            <mat-option value="3" ngDefaultControl>Uberlândia e Região</mat-option>
+            <mat-option value="4" ngDefaultControl>Belo Horizonte e Região</mat-option>
+            <mat-option value="5" ngDefaultControl>Vitória e Região</mat-option>
+            <mat-option value="6" ngDefaultControl>Contagem</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div fxFlex="100" fxFlex.gt-xs="10" class="pr-1">
+      <div class="pb-1">
+        <mat-form-field class="full-width default-bg">
+          <mat-select (selectionChange)="obterResumoFixa()" name="mostrar" id="mostrar" placeholder="Sumarizar por"
+            class="mb-1" [formControl]="filterForm.controls['mostrar']">
+            <mat-option value="Q" ngDefaultControl>Qtde de vidas</mat-option>
+            <mat-option value="V" ngDefaultControl>Valor do plano</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div fxFlex="100" fxFlex.gt-xs="10" class="pr-1">
+      <div class="pb-1">
+        <mat-form-field class="full-width default-bg">
+          <mat-select (selectionChange)="obterResumoFixa()" name="agruparpor" id="agruparpor" placeholder="Agrupar por"
+            class="mb-1" [formControl]="filterForm.controls['agruparpor']">
+            <mat-option value="S" ngDefaultControl>Semana</mat-option>
+            <mat-option value="M" ngDefaultControl>Mês</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div fxFlex="100" fxFlex.gt-xs="10" class="pr-1">
+      <div fxFlex="100" class="pr-1">
+        <span>Retroagir</span>
+      </div>
+      <div fxFlex="100" fxLayout="row" class="pt-0">
+        <mat-slider (change)="mostrar=false;" color="primary" [step]="1" [max]="12" [min]="1" [style.width]="'100%'"
+          [thumbLabel]="true" name="retroagir" id="retroagir" [formControl]="filterForm.controls['retroagir']">
+        </mat-slider>
+      </div>
+    </div>
+    <span fxFlex="80px"></span>
+
+    <button mat-mini-fab color="accent" class="mr-1" (click)="obterResumo(true)" matTooltip="Obter resumo">
+      <mat-icon>bar_chart</mat-icon>
+    </button>
+
+    <button mat-mini-fab color="warn" class="mr-1" (click)="obterResumo(false)" matTooltip="Obter lista">
+      <mat-icon>table_chart</mat-icon>
+    </button>
+
+  </form>
+
+  <highcharts-chart [Highcharts]="highcharts" [options]="chartOptions"
+    style="width:1200px; height: 600px; display: block;" *ngIf="mostrar && grafico">
+  </highcharts-chart>
+
+  <!-- <div *ngIf="!grafico">
+    <mat-card class="p-0">
+      <mat-card-content class="p-0">
+        <ngx-datatable class="material ml-0 mr-0" [rows]="series" [columnMode]="'flex'" [headerHeight]="50"
+          [footerHeight]="50" [limit]="10" [rowHeight]="'auto'">
+          <ngx-datatable-column name="Tipo/Abrangência" [flexGrow]="1">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{ row?.name }}
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+      </mat-card-content>
+    </mat-card>
+  </div> -->
+
+  <mat-card *ngIf="!grafico">
+    <mat-card-content class="p-0">
+      <mat-list class="compact-list mb-1">
+        <mat-list-item class="" *ngFor="let t of series; let i=index">
+          <div fxLayout="row" fxFlex="100">
+            <h6 class="m-0 mr-1">{{t.name}}</h6>
+            <span fxFlex></span>
+            <div fxFlex="10" fxLayoutAlign="start center" *ngFor="let d of t.data">
+              <span *ngIf="i >= 1 && filterForm.value.mostrar=='V'">{{ d | currency: 'BRL': 'R$ '}}</span>
+              <span *ngIf="i < 1 || filterForm.value.mostrar=='Q'">{{ d }}</span>
+            </div>
+          </div>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+
+</div>

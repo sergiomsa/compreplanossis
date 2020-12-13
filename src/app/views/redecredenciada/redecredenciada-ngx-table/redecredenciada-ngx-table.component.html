@@ -1,0 +1,196 @@
+<div>
+  <form [formGroup]="filterForm">
+    <mat-sidenav-container>
+
+      <mat-sidenav EgretSideNavToggle class="shop-sidebar" *ngIf="isSideNavOpen">
+        <div class="shop-filters-wrap">
+          <mat-accordion multi="true" displayMode="flat">
+            <!-- Categories -->
+            <mat-expansion-panel expanded="true">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Estado
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <mat-select id="estado" name="estado" [formControl]="filterForm.controls['estado']" placeholder="" class="mb-1" (selectionChange)="getEstado()">
+                <mat-option *ngFor="let e of estados" value="{{e.uf}}">{{e.estado}}</mat-option>
+              </mat-select>
+            </mat-expansion-panel>
+            <mat-expansion-panel expanded="true">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Cidade
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <mat-select id="cidade" name="cidade" [formControl]="filterForm.controls['cidade']" placeholder="" class="mb-1" (selectionChange)="getRede()">
+                <mat-option value="todas">Todas</mat-option>
+                <mat-option *ngFor="let c of cidades" value="{{c.cidade}}">{{c.cidade}}</mat-option>
+              </mat-select>
+            </mat-expansion-panel>
+            <mat-expansion-panel expanded="true">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Tipo
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <mat-select id="tipo" name="tipo" [formControl]="filterForm.controls['tipo']" placeholder="" class="mb-1" (selectionChange)="getRede()">
+                <mat-option value="0">Todos</mat-option>
+                <mat-option value="1">Clínica</mat-option>
+                <mat-option value="5">Hospital</mat-option>
+                <mat-option value="2">Laboratório</mat-option>
+                <mat-option value="4">Médico</mat-option>
+                <mat-option value="6">Odontologia</mat-option>
+                <mat-option value="3">Serviços de Imagem</mat-option>
+                <mat-option value="7">Terapia</mat-option>
+              </mat-select>
+            </mat-expansion-panel>
+            <mat-expansion-panel expanded="false" *ngIf="lat != 0">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Distância
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <mat-slider class="full-width mb-1" [formControl]="filterForm.controls['distancia']" [thumbLabel]="true" [max]="999" [min]="0"
+                (change)="getDistancia($event)"></mat-slider>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+      </mat-sidenav>
+      <div class="shop-wrap" fxLayout="row" fxLayoutWrap="wrap">
+        <div class="full-width">
+          <!-- Search Form -->
+
+          <div fxLayout="row" fxLayout.lt-sm="column" class="shop-top-toolbar">
+            <button mat-icon-button class="mr-1" (click)="toggleSideNav()" matTooltip="Detalhar pesquisa"><mat-icon>short_text</mat-icon></button>
+			
+			<div fxFlex="90" class="pt-1">
+				<div class="product-search-wrap" fxFlex="49">
+					<input type="text" matInput name="especialidade" id="especialidade" placeholder="Pesquisar especialidade" class="product-search full-width"  [formControl]="filterForm.controls['especialidade']" 
+					(keyup)='updateFilterEspecialidades($event)' matTooltip="Pesquisar especialidade">
+				</div> 
+					
+				<div class="product-search-wrap" fxFlex="2">
+					<span fxFlex></span>
+				</div>
+					
+				<div class="product-search-wrap" fxFlex="49">
+
+				  <input type="text" id="search" name="search" placeholder="Pesquisar estabelecimento" class="product-search full-width" [formControl]="filterForm.controls['search']"
+					(keyup)='updateFilterCredenciados($event)' matTooltip="Pesquisar estabelecimento">
+
+				</div>
+			</div>
+            <!-- View change buttons and cart -->
+            
+			<div fxFlex="10" class="pt-1">
+			<span fxFlex></span>
+            <div [fxHide.lt-md]="true" *ngIf="lat != 0">
+              <button mat-icon-button [color]="viewMode === 'list-view' ? 'primary' : ''" (click)="viewMode = 'list-view'" matTooltip="Visão lista">
+                <mat-icon>format_list_bulleted</mat-icon>
+              </button>
+              <button mat-icon-button [color]="viewMode === 'grid-view' ? 'primary' : ''" (click)="viewMode = 'grid-view'" matTooltip="Visão mapa">
+                <mat-icon>room</mat-icon>
+              </button>
+            </div>
+			</div>
+          </div>
+
+
+          <!-- Products container -->
+          <div *ngIf="credenciados.length > 0 && viewMode=='list-view'">
+            <mat-card class="p-0">
+              <mat-card-content class="p-0">
+                <ngx-datatable #TableConveniado class="material ml-0 mr-0" [rows]="credenciados" [columnMode]="'flex'" [headerHeight]="50"
+                  [footerHeight]="50" [limit]="17" [rowHeight]="30">
+
+                  <!-- Row Detail Template -->
+                  <ngx-datatable-row-detail [rowHeight]="'auto'" [rowHeight]="getRowDetailsHeight" #myDetailRow (toggle)="onDetailToggle($event)">
+                    <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+                      <div style="padding-left:144px;">
+                        <div><strong>Atende as especialidades</strong></div>
+                        <div *ngFor="let e of row.especialidades">{{e}}</div>
+                      </div>
+                    </ng-template>
+                  </ngx-datatable-row-detail>
+
+                  <ngx-datatable-column [flexGrow]="1" [sortable]="false">
+                    <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+                      <a href="javascript:void(0)" [class.datatable-icon-right]="!expanded" [class.datatable-icon-down]="expanded" title="Expandir / Recolher Linha"
+                        (click)="toggleExpandRow(row)">
+                      </a>
+                    </ng-template>
+                  </ngx-datatable-column>
+
+                  <ngx-datatable-column name="Distância" [flexGrow]="1.5" *ngIf="lat != 0">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                      {{ row?.distancia }}
+                    </ng-template>
+                  </ngx-datatable-column>
+
+                  <ngx-datatable-column name="Conveniado" [flexGrow]="7">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                      {{ row?.razaosocial }}
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="Tipo" [flexGrow]="3">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                      {{ row?.tipo }}
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="Telefone" [flexGrow]="3">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                      {{ row?.telefone }}
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="Endereço" [flexGrow]="7">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                      {{ row?.endereco }}
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="Bairro" [flexGrow]="4">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                      {{ row?.bairro }}
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="Cidade" [flexGrow]="4">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                      {{ row?.cidade }}
+                    </ng-template>
+                  </ngx-datatable-column>
+                </ngx-datatable>
+              </mat-card-content>
+            </mat-card>
+          </div>
+          <div *ngIf="credenciados.length > 0 && viewMode=='grid-view' && lat != 0">
+            <mat-card class="p-0">
+              <mat-card-content class="p-0">
+                <agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoom" [disableDefaultUI]="false" [zoomControl]="true" [usePanning]="true"
+                  (mapClick)="mapClicked($event)">
+
+                  <agm-marker-cluster imagePath="https://raw.githubusercontent.com/googlemaps/v3-utility-library/master/markerclustererplus/images/m">
+                    <agm-marker *ngFor="let m of credenciados; let i = index" (markerClick)="clickedMarker(m)" [latitude]="+m.latitude" [longitude]="+m.longitude"
+                      [label]="m.tipo.substr(0,1)" [markerDraggable]="false">
+                      <agm-info-window>
+                        <br><strong>{{m.razaosocial}} ({{m.tipo}})</strong>
+                        <br>{{m.telefone}}
+                        <br>{{m.endereco}}, {{m.numero}} {{m.complemento}}
+                        <br>{{m.cidade}}
+                        <br>{{m.bairro}}
+                        <br>{{m.estado}}
+                        <br>
+                        <ul>
+                          <li> atende {{m.qespecialidades}} especialidade(s)</li>
+                        </ul>
+                      </agm-info-window>
+                    </agm-marker>
+                  </agm-marker-cluster>
+                </agm-map>
+              </mat-card-content>
+            </mat-card>
+          </div>
+          <!-- Adicionando o redecredenciada-->
+        </div>
+      </div>
+    </mat-sidenav-container>
+  </form>
+</div>

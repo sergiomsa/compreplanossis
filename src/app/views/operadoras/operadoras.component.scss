@@ -1,0 +1,14 @@
+.mat-card-header{
+  padding-bottom: 20px !important;
+}
+.pr-1 {
+  padding-right: 3rem !important;
+}
+.img {
+  width: 200px;
+  height: 150px;
+}
+
+:host /deep/ .datatable-body-row.active .datatable-row-group {
+  background-color:#F5F5F5 !important;
+}

@@ -1,0 +1,262 @@
+<div>
+  <mat-sidenav-container>
+    <mat-sidenav EgretSideNavToggle class="shop-sidebar" *ngIf="isSideNavOpen">
+      <div class="shop-filters-wrap">
+        <form [formGroup]="filter1Form">
+          <mat-accordion multi="true" displayMode="flat">
+            <!-- Categories -->
+            <mat-expansion-panel expanded="true">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Origem
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <mat-select id="origem" name="origem" [formControl]="filter1Form.controls['origem']" placeholder=""
+                class="mb-1">
+                <mat-option value="99">Todas</mat-option>
+                <mat-option value="Vendedor">Aplicativo</mat-option>
+                <mat-option value="Ecommerce">Ecommerce</mat-option>
+              </mat-select>
+            </mat-expansion-panel>
+            <mat-expansion-panel expanded="true">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Situação
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <mat-select id="status" name="status" [formControl]="filter1Form.controls['status']" placeholder=""
+                class="mb-1">
+                <mat-option value="99">Todas</mat-option>
+                <mat-option value=" ">Pendente</mat-option>
+                <mat-option value="R">Registrada</mat-option>
+                <mat-option value="C">Confirmada</mat-option>
+              </mat-select>
+            </mat-expansion-panel>
+            <mat-expansion-panel expanded="true">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Período
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <mat-form-field>
+                <input matInput name="datainicio" id="datainicio" [formControl]="filter1Form.controls['datainicio']"
+                  placeholder="Data início" [matDatepicker]="datainicioDatepicker">
+                <mat-datepicker-toggle matSuffix [for]="datainicioDatepicker"></mat-datepicker-toggle>
+              </mat-form-field>
+              <mat-datepicker #datainicioDatepicker></mat-datepicker>
+              <mat-form-field>
+                <input matInput name="datafim" id="datafim" [formControl]="filter1Form.controls['datafim']"
+                  placeholder="Data fim" [matDatepicker]="datafimDatepicker">
+                <mat-datepicker-toggle matSuffix [for]="datafimDatepicker"></mat-datepicker-toggle>
+              </mat-form-field>
+              <mat-datepicker #datafimDatepicker></mat-datepicker>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </form>
+      </div>
+    </mat-sidenav>
+    <div class="shop-wrap" fxLayout="row" fxLayoutWrap="wrap">
+      <div class="full-width">
+        <!-- Search Form -->
+        <div fxLayout="row" fxLayout.lt-sm="column" class="shop-top-toolbar">
+          <button mat-mini-fab class="mr-1" (click)="toggleSideNav()" matTooltip="Detalhar perquisa">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <form [formGroup]="filterForm">
+            <div fxFlex="100" fxFlex.gt-xs="60" class="pr-1">
+              <div class="pb-1">
+                <mat-form-field class="full-width default-bg">
+                  <mat-select name="pesquisarpor" id="pesquisarpor" placeholder="Por" class="mb-1"
+                    [formControl]="filterForm.controls['pesquisarpor']">
+                    <mat-option value=""></mat-option>
+                    <mat-option value="vendedor">Vendedor</mat-option>
+                    <mat-option value="corretora">Corretora</mat-option>
+                    <mat-option value="id">ID</mat-option>
+                    <mat-option value="tid">Ecommerce ID</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div fxFlex="100" fxFlex.gt-xs="60" class="pr-1">
+              <div class="pb-1">
+                <mat-form-field class="full-width default-bg">
+                  <input matInput name="searchProduct" placeholder="Pesquisar" class="mb-1"
+                    [formControl]="filterForm.controls['search']">
+                </mat-form-field>
+              </div>
+            </div>
+          </form>
+          <!-- View change buttons and cart -->
+          <button mat-mini-fab color="primary" class="mr-1" (click)="pesquisarAdesoes()"
+            [disabled]="filter1Form.invalid" matTooltip="Pesquisar">
+            <mat-icon>search</mat-icon>
+          </button>
+          <button mat-mini-fab color="secundary" class="mr-1" (click)="exportarAdesoes()"
+            [disabled]="filter1Form.invalid" matTooltip="Exportar adesoes">
+            <mat-icon>cloud_download</mat-icon>
+          </button>
+        </div>
+        <!-- Products container -->
+        <div *ngIf="adesoes.length > 0">
+          <mat-card class="p-0">
+            <mat-card-content class="p-0">
+              <ngx-datatable #TableAdesao class="material ml-0 mr-0" [rows]="adesoes" [columnMode]="'flex'"
+                [headerHeight]="50" [footerHeight]="50" [limit]="page_size" [externalPaging]="true"
+                [count]="page_totalElements" [offset]="page_pageNumber" [limit]="page_size" (page)='paginacao($event)'
+                [rowHeight]="35" [messages]="messages">
+                <!-- Row Detail Template -->
+                <ngx-datatable-row-detail [rowHeight]="'100%'" #myDetailRow (toggle)="onDetailToggle($event)">
+                  <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+                    <div style="padding-left:40px;">
+
+                      <div *ngIf="row?.dorigem=='Ecommerce'">
+                        <div>Ordem Nº: {{row?.tid}} | Metodo de Pagamento: {{row?.payment_method }} | Situação:
+                          {{row?.dstatus }}</div>
+
+                        <table class="tg">
+                          <tr>
+                            <td>CPF</td>
+                            <td>Nome</td>
+                            <td>Telefones</td>
+                            <td>Email</td>
+                          </tr>
+                          <tr *ngFor="let p of row?.comprador">
+                            <td>{{p?.cpf }}</td>
+                            <td>{{p?.nome}}</td>
+                            <td>{{p?.celular}} {{row?.comprador?.telefone}}</td>
+                            <td>{{p?.email}}</td>
+                        </table>
+                      </div>
+
+                      <div>Beneficiários:</div>
+
+                      <table class="tg">
+                        <tr>
+                          <td>Tipo</td>
+                          <td>CPF</td>
+                          <td>Nome</td>
+                          <td>Sexo</td>
+                          <td>Nascimento</td>
+                          <td>Telefones</td>
+                          <td>Email</td>
+                          <td>Endereço</td>
+                        </tr>
+                        <tr *ngFor="let p of row?.beneficiarios">
+                          <td>{{p?.dtipo}}</td>
+                          <td>{{p?.cpf }}</td>
+                          <td>{{p?.nome}}</td>
+                          <td>{{p?.sexo}}</td>
+                          <td>{{p?.datanascimento}}</td>
+
+                          <td>{{p?.celular}} {{row?.comprador?.telefone}}</td>
+                          <td>{{p?.email}}</td>
+                          <td> {{p?.cep}} | {{p?.logradouro}}, {{p?.numero}} |
+                            {{p?.complemento}} -
+                            {{p?.bairro}}, {{p?.cidade}} - {{p?.estado}}</td>
+                        </tr>
+                      </table>
+                    </div>
+
+                  </ng-template>
+                </ngx-datatable-row-detail>
+
+                <ngx-datatable-column [flexGrow]="0" [sortable]="false">
+                  <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+                    <a href="javascript:void(0)" [class.datatable-icon-right]="!expanded"
+                      [class.datatable-icon-down]="expanded" title="Expand/Collapse Row" (click)="toggleExpandRow(row)">
+                    </a>
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="Nº" [flexGrow]="1">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row?.id }}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="Vendedor" [flexGrow]="2">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row?.vendedor?.nome }}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="O" [flexGrow]="1">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row?.dorigem.substr(0,1) }}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="Corretora" [flexGrow]="2">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row?.corretora?.corretora }}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="Plano" [flexGrow]="2">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row?.plano?.plano }}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="QVidas" [flexGrow]="1">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row?.qtdevidas }}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="Valor" [flexGrow]="1">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row?.valor | currency: 'BRL': 'R$' }}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="Situação" [flexGrow]="1">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row?.dsituacao }}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="MP" [flexGrow]="1">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row?.payment_method }}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="SP" [flexGrow]="1">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row?.dstatus }}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="Em" [flexGrow]="1">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row?.criadoem }}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="" [flexGrow]="1">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                   <button mat-icon-button mat-sm-button color="warn" (click)="removerAdesao(row)"
+                    matTooltip="Excluir adesão" *ngIf="ExcluirAdesao">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                    <button mat-icon-button mat-sm-button color="primary" (click)="downloadContrato(row?.id)"
+                      [disabled]="row?.situacao !='C'" matTooltip="Download Contrato" *ngIf="BaixarContratoAdesao">
+                      <mat-icon>cloud_download</mat-icon>
+                    </button>
+                    <button mat-icon-button mat-sm-button color="primary" (click)="emailContrato(row?.id)"
+                      [disabled]="row?.situacao !='C'" matTooltip="Reenviar email" *ngIf="EnviarEmailContratoAdesao">
+                      <mat-icon>email</mat-icon>
+                    </button>
+                  
+                  </ng-template>
+                </ngx-datatable-column>
+
+              </ngx-datatable>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </mat-sidenav-container>
+</div>

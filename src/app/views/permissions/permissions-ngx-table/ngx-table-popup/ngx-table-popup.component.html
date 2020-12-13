@@ -1,0 +1,50 @@
+<h1 matDialogTitle>{{data.title}}</h1>
+<form [formGroup]="permissionForm" (ngSubmit)="submit()">
+  <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutWrap="wrap">
+
+       <div fxFlex="100" class="pr-1">
+        <mat-form-field class="full-width">
+          <mat-select name="programa_id" formControlName="programa_id" placeholder="Programa" class="mb-1">
+            <mat-option *ngFor="let programa of programas" [value]="programa.id">
+              {{programa.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <small *ngIf="permissionForm.controls['programa_id'].hasError('required') && permissionForm.controls['programa_id'].touched"
+          class="form-error-msg"> Programa é obrigatório </small>
+      </div>
+     
+
+    <div fxFlex="100" class="pr-1">
+      <mat-form-field class="full-width">
+        <input matInput name="nome" id="nome" [formControl]="permissionForm.controls['nome']" placeholder="Permissão">
+      </mat-form-field>
+      <small *ngIf="permissionForm.controls['nome'].hasError('required') && permissionForm.controls['nome'].touched" class="form-error-msg">
+        Permissão é obrigatório
+      </small>
+    </div>
+
+    <div fxFlex="100" class="pr-1">
+      <mat-form-field class="full-width">
+        <input matInput name="descricao" id="descricao" [formControl]="permissionForm.controls['descricao']" placeholder="Descrição">
+      </mat-form-field>
+    </div>
+
+    <div fxflex="100" class="pr-1">
+        <mat-form-field class="full-width">
+          <mat-select name="situacao" formControlName="situacao" placeholder="Situação" class="mb-1">
+            <mat-option value="Ativo" ngDefaultControl>Ativo</mat-option>
+            <mat-option value="Inativo" ngDefaultControl>Inativo</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <small *ngIf="permissionForm.controls['situacao'].hasError('required') && permissionForm.controls['situacao'].touched" class="form-error-msg">
+          A Situação é obrigatória </small>
+    </div>
+   
+    <div fxFlex="100" class="mt-1">
+      <button mat-raised-button color="primary" [disabled]="permissionForm.invalid">Save</button>
+      <span fxFlex></span>
+      <button mat-button color="warn" type="button" (click)="dialogRef.close(false)">Cancel</button>
+    </div>
+  </div>
+</form>

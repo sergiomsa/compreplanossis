@@ -1,0 +1,597 @@
+<mat-card class="p-1" fxFlex="55">
+  <mat-card-content class="p-1">
+    <form [formGroup]="beneficiarioForm">
+      <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutWrap="wrap">
+        <div fxFlex="50" class="pr-1">
+          <mat-form-field class="full-width">
+            <input matInput name="nome" id="nome" [formControl]="beneficiarioForm.controls['nome']" placeholder="Nome">
+          </mat-form-field>
+          <small
+            *ngIf="beneficiarioForm.controls['nome'].hasError('required') && beneficiarioForm.controls['nome'].touched"
+            class="form-error-msg">
+            O nome do é obrigatório
+          </small>
+        </div>
+        <div fxFlex="15" class="pr-1 pt-0">
+          <mat-form-field class="full-width">
+            <mat-select name="sexo" id="sexo" [formControl]="beneficiarioForm.controls['sexo']" placeholder="Sexo">
+              <mat-option value="M">Masculino</mat-option>
+              <mat-option value="F">Feminino</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <small
+            *ngIf="beneficiarioForm.controls['sexo'].hasError('required') && beneficiarioForm.controls['sexo'].touched"
+            class="form-error-msg">
+            Sexo é obrigatório
+          </small>
+        </div>
+        <div fxFlex="35" class="pr-1" *ngIf="beneficiario?.tipo =='R'">
+          <mat-form-field class="full-width">
+            <input matInput name="datanascimento" id="datanascimento"
+              [formControl]="beneficiarioForm.controls['datanascimento']" [matDatepicker]="datanascimentoDatepicker"
+              placeholder="Data de Nascimento">
+            <mat-datepicker-toggle matSuffix [for]="datanascimentoDatepicker">
+            </mat-datepicker-toggle>
+          </mat-form-field>
+          <mat-datepicker #datanascimentoDatepicker></mat-datepicker>
+          <small
+            *ngIf="beneficiarioForm.controls['datanascimento'].hasError('required') && beneficiarioForm.controls['datanascimento'].touched"
+            class="form-error-msg"> Data de nascimento é Obrigatório </small>
+          <small
+            *ngIf="beneficiarioForm.controls['datanascimento'].hasError('date') && beneficiarioForm.controls['datanascimento'].touched"
+            class="form-error-msg"> Data inválida </small>
+        </div>
+        <div fxFlex="20" class="pr-1" *ngIf="beneficiario?.tipo !='R'">
+          <mat-form-field class="full-width">
+            <input matInput name="datanascimento" id="datanascimento"
+              [formControl]="beneficiarioForm.controls['datanascimento']" [matDatepicker]="datanascimentoDatepicker"
+              placeholder="Data de Nascimento">
+            <mat-datepicker-toggle matSuffix [for]="datanascimentoDatepicker">
+            </mat-datepicker-toggle>
+          </mat-form-field>
+          <mat-datepicker #datanascimentoDatepicker></mat-datepicker>
+          <small
+            *ngIf="beneficiarioForm.controls['datanascimento'].hasError('required') && beneficiarioForm.controls['datanascimento'].touched"
+            class="form-error-msg"> Data de nascimento é Obrigatório </small>
+          <small
+            *ngIf="beneficiarioForm.controls['datanascimento'].hasError('date') && beneficiarioForm.controls['datanascimento'].touched"
+            class="form-error-msg"> Data inválida </small>
+        </div>
+        <div fxFlex="15" class="pr-1" *ngIf="beneficiario?.tipo !='R'">
+          <mat-form-field class="full-width" appearance="none" >
+            <input matInput name="idade" id="idade" [formControl]="beneficiarioForm.controls['idade']" placeholder="Idade" readonly>
+          </mat-form-field>
+        </div>
+       
+        <div fxFlex="25" class="pr-1" *ngIf="beneficiario?.dmedicos">
+          <mat-form-field class="full-width">
+            <input matInput name="peso" id="peso" [formControl]="beneficiarioForm.controls['peso']" placeholder="Peso">
+          </mat-form-field>
+          <small
+            *ngIf="beneficiarioForm.controls['peso'].hasError('required') && beneficiarioForm.controls['peso'].touched"
+            class="form-error-msg">
+            Peso é obrigatório </small>
+        </div>
+        <div fxFlex="25" class="pr-1" *ngIf="beneficiario?.dmedicos">
+          <mat-form-field class="full-width">
+            <input matInput name="altura" id="altura" [formControl]="beneficiarioForm.controls['altura']"
+              placeholder="Altura">
+          </mat-form-field>
+          <small
+            *ngIf="beneficiarioForm.controls['altura'].hasError('required') && beneficiarioForm.controls['altura'].touched"
+            class="form-error-msg">
+            Altura é obrigatória </small>
+        </div>
+        <div fxFlex="50" class="pr-1 pt-0">
+          <mat-form-field class="full-width">
+            <mat-select name="estadocivil_id" id="estadocivil_id"
+              [formControl]="beneficiarioForm.controls['estadocivil_id']" placeholder="Estado civil">
+              <mat-option [value]=7>Amaziado(a)</mat-option>
+              <mat-option [value]=8>Amigado(a)</mat-option>
+              <mat-option [value]=1>Casado(a)</mat-option>
+              <mat-option [value]=10>Desquitado(a)</mat-option>
+              <mat-option [value]=4>Divorciado(a)</mat-option>
+              <mat-option [value]=6>Outros</mat-option>
+              <mat-option [value]=5>Separado(a)</mat-option>
+              <mat-option [value]=2>Solteiro(a)</mat-option>
+              <mat-option [value]=9>União Estavel</mat-option>
+              <mat-option [value]=3>Viúvo(a)</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <small
+            *ngIf="beneficiarioForm.controls['estadocivil_id'].hasError('required') && beneficiarioForm.controls['estadocivil_id'].touched"
+            class="form-error-msg">
+            Estado cívil é obrigatório
+          </small>
+        </div>
+        <div fxFlex="50" class="pr-1" [hidden]="beneficiario?.tipo =='R'">
+          <mat-form-field class="full-width">
+            <input matInput name="nomedamae" id="nomedamae" [formControl]="beneficiarioForm.controls['nomedamae']"
+              placeholder="Nome da mãe">
+          </mat-form-field>
+          <small
+            *ngIf="beneficiarioForm.controls['nomedamae'].hasError('required') && beneficiarioForm.controls['nomedamae'].touched"
+            class="form-error-msg">
+            Nome da mãe é obrigatório </small>
+        </div>
+        <div fxFlex="50" class="pr-1" [hidden]="beneficiario?.tipo !='B'">
+          <mat-form-field class="full-width">
+            <input matInput name="parentesco" id="parentesco" [formControl]="beneficiarioForm.controls['parentesco']"
+              placeholder="Parentesco">
+          </mat-form-field>
+          <small
+            *ngIf="beneficiarioForm.controls['parentesco'].hasError('required') && beneficiarioForm.controls['parentesco'].touched"
+            class="form-error-msg">
+            Parentesco é obrigatório </small>
+        </div>
+        <div fxFlex="50" class="pr-1" [hidden]="beneficiario?.tipo =='R' || !beneficiario?.registroans">
+          <mat-form-field class="full-width">
+            <input matInput name="cns" id="cns" [formControl]="beneficiarioForm.controls['cns']" placeholder="CNS">
+          </mat-form-field>
+          <small
+            *ngIf="beneficiarioForm.controls['cns'].hasError('required') && beneficiarioForm.controls['cns'].touched"
+            class="form-error-msg">
+            CNS é obrigatória </small>
+        </div>
+        <div fxFlex="50" class="pr-1 full-width" [hidden]="beneficiario?.tipo =='R' || !beneficiario?.registroans">
+          
+            <input type="file" name="docfile" id="docfile" [formControl]="beneficiarioForm.controls['docfile']" #fileInput/>
+         
+        </div>
+        <div fxFlex="50" class="pr-1">
+          <mat-form-field class="full-width">
+            <input matInput name="cpf" id="cpf" [textMask]="{mask: maskcpf}"
+              [formControl]="beneficiarioForm.controls['cpf']" placeholder="CPF">
+          </mat-form-field>
+          <small
+            *ngIf="beneficiarioForm.controls['cpf'].hasError('required') && beneficiarioForm.controls['cpf'].touched"
+            class="form-error-msg">
+            CPF é obrigatório </small>
+        </div>
+        <div fxFlex="50" class="pr-1">
+          <mat-form-field class="full-width">
+            <input matInput name="rg" id="rg" [formControl]="beneficiarioForm.controls['rg']" placeholder="RG">
+          </mat-form-field>
+          <small *ngIf="beneficiarioForm.controls['rg'].hasError('required') && beneficiarioForm.controls['rg'].touched"
+            class="form-error-msg">
+            Rg é obrigatório </small>
+        </div>
+        <div fxFlex="50" class="pr-1" [hidden]="beneficiario?.tipo =='B'">
+          <mat-form-field class="full-width">
+            <input matInput type="email" name="email" id="email" [formControl]="beneficiarioForm.controls['email']"
+              placeholder="Email">
+          </mat-form-field>
+          <small
+            *ngIf="beneficiarioForm.controls['email'].hasError('required') && beneficiarioForm.controls['email'].touched"
+            class="form-error-msg">
+            E-mail é obrigatório
+          </small>
+          <small
+            *ngIf="beneficiarioForm.controls['email'].hasError('email') && beneficiarioForm.controls['email'].touched"
+            class="form-error-msg">
+            E-mail inválido
+          </small>
+        </div>
+        <div fxFlex="25" class="pr-1" [hidden]="beneficiario?.tipo =='B'">
+          <mat-form-field class="full-width">
+            <input matInput name="celular" id="celular" [textMask]="{mask: maskcelular}"
+              [formControl]="beneficiarioForm.controls['celular']" placeholder="Telefone Celular">
+          </mat-form-field>
+          <small
+            *ngIf="beneficiarioForm.controls['celular'].hasError('required') && beneficiarioForm.controls['celular'].touched"
+            class="form-error-msg">
+            Celular é obrigatório
+          </small>
+        </div>
+        <div fxFlex="25" class="pr-1" [hidden]="beneficiario?.tipo =='B'">
+          <mat-form-field class="full-width">
+            <input matInput name="telefone" id="telefone" [textMask]="{mask: masktelefone}"
+              [formControl]="beneficiarioForm.controls['telefone']" placeholder="Telefone Fixo">
+          </mat-form-field>
+        </div>
+        <div fxFlex="50" class="pr-1" [hidden]="beneficiario?.tipo =='B'">
+          <mat-form-field class="full-width">
+            <input matInput name="cep" id="cep" [textMask]="{mask: maskcep}" (change)="obterCep()"
+              [formControl]="beneficiarioForm.controls['cep']" placeholder="Cep">
+          </mat-form-field>
+          <small
+            *ngIf="beneficiarioForm.controls['cep'].hasError('required') && beneficiarioForm.controls['cep'].touched"
+            class="form-error-msg">
+            CEP obrigatório </small>
+        </div>
+        <div fxFlex="50" class="pr-1" [hidden]="beneficiario?.tipo =='B'">
+          <mat-form-field class="full-width">
+            <input matInput name="logradouro" id="logradouro" [formControl]="beneficiarioForm.controls['logradouro']"
+              placeholder="Logradouro">
+          </mat-form-field>
+          <small
+            *ngIf="beneficiarioForm.controls['logradouro'].hasError('required') && beneficiarioForm.controls['logradouro'].touched"
+            class="form-error-msg"> Logradouro é obrigatório </small>
+        </div>
+        <div fxFlex="25" class="pr-1" [hidden]="beneficiario?.tipo =='B'">
+          <mat-form-field class="full-width">
+            <input matInput type="number" name="numero" id="numero" [formControl]="beneficiarioForm.controls['numero']"
+              placeholder="Numero">
+          </mat-form-field>
+          <small
+            *ngIf="beneficiarioForm.controls['numero'].hasError('required') && beneficiarioForm.controls['numero'].touched"
+            class="form-error-msg">
+            Numero é obrigatório </small>
+        </div>
+        <div fxFlex="25" class="pr-1" [hidden]="beneficiario?.tipo =='B'">
+          <mat-form-field class="full-width">
+            <input matInput name="complemento" id="complemento" [formControl]="beneficiarioForm.controls['complemento']"
+              placeholder="Complemento">
+          </mat-form-field>
+        </div>
+        <div fxFlex="50" class="pr-1" [hidden]="beneficiario?.tipo =='B'">
+          <mat-form-field class="full-width">
+            <input matInput name="bairro" id="bairro" [formControl]="beneficiarioForm.controls['bairro']"
+              placeholder="Bairro">
+          </mat-form-field>
+          <small
+            *ngIf="beneficiarioForm.controls['bairro'].hasError('required') && beneficiarioForm.controls['bairro'].touched"
+            class="form-error-msg">
+            Bairro é obrigatório </small>
+        </div>
+        <div fxFlex="50" class="pr-1" [hidden]="beneficiario?.tipo =='B'">
+          <mat-form-field class="full-width">
+            <input matInput name="cidade" id="cidade" [formControl]="beneficiarioForm.controls['cidade']"
+              placeholder="Cidade">
+          </mat-form-field>
+          <small
+            *ngIf="beneficiarioForm.controls['cidade'].hasError('required') && beneficiarioForm.controls['cidade'].touched"
+            class="form-error-msg">
+            Cidade é obrigatória </small>
+        </div>
+        <div fxFlex="50" class="pr-1" [hidden]="beneficiario?.tipo =='B'">
+          <mat-form-field class="full-width">
+            <input matInput name="estado" id="estado" [formControl]="beneficiarioForm.controls['estado']"
+              placeholder="Estado">
+          </mat-form-field>
+          <small
+            *ngIf="beneficiarioForm.controls['estado'].hasError('required') && beneficiarioForm.controls['estado'].touched"
+            class="form-error-msg">
+            Estado é obrigatório </small>
+        </div>
+      </div>
+    </form>
+    <mat-card-actions>
+      <span fxFlex></span>
+      <button mat-raised-button color="primary" [disabled]="!alteradoBeneficiario  || beneficiarioForm.invalid"
+        (click)="onSalvarBeneficiario()" *ngIf="SalvarBeneficiario && beneficiario.podealterar=='S'">Salvar
+       </button>
+    </mat-card-actions>
+  </mat-card-content>
+</mat-card>
+<mat-card class="p-0" fxFlex="45">
+  <mat-card-content class="p-0">
+    <mat-tab-group [(selectedIndex)]="selectedIndex" (selectedTabChange)="tabPlanoClick($event)">
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">work</mat-icon>Documentos
+        </ng-template>
+        <ngx-datatable class="material ml-0 mr-0" [rows]="beneficiario?.documentos" [columnMode]="'flex'"
+          [headerHeight]="30" [footerHeight]="20" [limit]="10" [rowHeight]="40" [messages]="messages" *ngIf="listar">
+          <ngx-datatable-column name="" [flexGrow]="3">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <span style="color: blue;" *ngIf="row?.status=='A'">{{ row?.documento.documento }}</span>
+              <span style="color: red;" *ngIf="row?.status=='R'">{{ row?.documento.documento }}</span>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="" [sortable]="false" [flexGrow]="1">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <span fxFlex="20px"></span>
+              <button mat-icon-button mat-sm-button color="primary" [disabled]="row?.url==''" matTooltip="visualizar"
+                (click)="visualizarImagem(row)">
+                <mat-icon>image</mat-icon>
+              </button>
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+        <mat-card class="p-1" *ngIf="!listar">
+          <mat-card-title>
+            <strong>&nbsp;{{documento.documento.documento}}</strong>
+          </mat-card-title>
+          <mat-divider></mat-divider>
+          <mat-card-content class="p-1">
+            <div fxLayout="row" fxLayoutAlign="center">
+              <img width="650px" height="500px" class="mat-elevation-z2" src="{{documento.url}}" alt="">
+            </div>
+            <mat-divider></mat-divider>
+            <form [formGroup]="documentoForm">
+              <div fxLayout="row" fxLayoutAlign="wrap">
+                <div fxFlex="100" class="p-1">
+                  <mat-form-field class="full-width">
+                    <input matInput name="observacao" id="observacao"
+                      [formControl]="documentoForm.controls['observacao']" placeholder="Observação">
+                  </mat-form-field>
+                </div>
+              </div>
+            </form>
+            <mat-divider></mat-divider>
+            <mat-card-actions>
+              <span fxFlex="20px"></span>
+              <button mat-raised-button color="primary" (click)="onAprovarDocumento(documento.id)"
+                *ngIf="ReprovarDocumento && documento.status == 'R'">
+                <mat-icon>thumb_up_alt</mat-icon>Aprovar
+              </button>
+              <button mat-raised-button color="warn" (click)="onReprovarDocumento(documento.id)"
+                [disabled]="documentoForm.invalid" *ngIf="ReprovarDocumento && documento.status == 'A'">
+                <mat-icon>thumb_down_alt</mat-icon>Reprovar
+              </button>
+              <span fxFlex></span>
+              <button mat-stroked-button color="accent" type="button"
+                (click)="downloadDocumento(documento.id)">Download</button>
+              <span fxFlex="10px"></span>
+              <button mat-stroked-button color="primary" type="button" (click)="listar=true;">Voltar</button>
+              <span fxFlex="20px"></span>
+            </mat-card-actions>
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+      <mat-tab *ngIf="beneficiario?.dmedicos && AlterarDmedicos">
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">support_agent</mat-icon>Pós-venda
+        </ng-template>
+        <mat-card class="p-1">
+          <mat-card-content class="p-1">
+            <form [formGroup]="posvendaForm">
+              <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutWrap="wrap">
+
+                <div fxFlex="25" class="pr-1">
+                  <mat-form-field class="full-width">
+                    <input matInput name="contato_data" id="contato_data"
+                      [formControl]="posvendaForm.controls['contato_data']" [matDatepicker]="contato_dataDatepicker"
+                      placeholder="Realizado em *">
+                    <mat-datepicker-toggle matSuffix [for]="contato_dataDatepicker">
+                    </mat-datepicker-toggle>
+                  </mat-form-field>
+                  <mat-datepicker #contato_dataDatepicker></mat-datepicker>
+                  <small
+                    *ngIf="posvendaForm.controls['contato_data'].hasError('required') && posvendaForm.controls['contato_data'].touched"
+                    class="form-error-msg"> Obrigatório </small>
+                  <small
+                    *ngIf="posvendaForm.controls['contato_data'].hasError('date') && posvendaForm.controls['contato_data'].touched"
+                    class="form-error-msg"> Data inválida </small>
+                </div>
+
+                <div fxFlex="25" class="pr-1">
+                  <mat-form-field class="full-width">
+                    <input matInput name="contato_hora" class="block" id="contato_hora" [textMask]="{mask: maskhora}"
+                      [formControl]="posvendaForm.controls['contato_hora']" placeholder="Horário *">
+                  </mat-form-field>
+                  <small
+                    *ngIf="posvendaForm.controls['contato_hora'].hasError('required') && posvendaForm.controls['contato_hora'].touched"
+                    class="form-error-msg">
+                    Obrigatório
+                  </small>
+                </div>
+
+                <div fxFlex="50" class="pr-1">
+                  <mat-form-field class="full-width">
+                    <input matInput name="contato_nome" id="contato_nome"
+                      [formControl]="posvendaForm.controls['contato_nome']" placeholder="Contato *">
+                  </mat-form-field>
+                  <small
+                    *ngIf="posvendaForm.controls['contato_nome'].hasError('required') && posvendaForm.controls['contato_nome'].touched"
+                    class="form-error-msg">
+                    Obrigatório
+                  </small>
+                </div>
+
+                <div fxFlex="50" class="pr-1">
+                  <mat-form-field class="full-width">
+                    <input matInput name="contato_telefone" id="contato_telefone" [textMask]="{mask: masktelefone}"
+                      [formControl]="posvendaForm.controls['contato_telefone']" placeholder="Telefone *">
+                  </mat-form-field>
+                  <small
+                    *ngIf="posvendaForm.controls['contato_telefone'].hasError('required') && posvendaForm.controls['contato_telefone'].touched"
+                    class="form-error-msg">
+                    Obrigatório
+                  </small>
+                </div>
+
+                <div fxFlex="50" class="pr-1">
+                  <mat-form-field class="full-width">
+                    <input matInput type="email" name="contato_email" id="contato_email"
+                      [formControl]="posvendaForm.controls['contato_email']" placeholder="Email">
+                  </mat-form-field>
+                </div>
+
+                <div fxFlex="80" class="full-width">
+                  <span>Já possuiu plano de saúde nos últimos anos?</span>
+                </div>
+                <div fxFlex="20" class="full-width">
+                  <mat-slide-toggle (change)="changePossuiuPlano($event)" name="possuiplano" id="possuiplano"
+                    [formControl]="posvendaForm.controls['possuiplano']"><span
+                      *ngIf="posvendaForm.value.possuiplano">Sim</span><span
+                      *ngIf="!posvendaForm.value.possuiplano">Não</span></mat-slide-toggle>
+                </div>
+                <div fxFlex="100" class="pr-1" *ngIf="posvendaForm.value.possuiplano">
+                  <mat-form-field class="full-width">
+                    <input matInput name="qualplano" id="qualplano" [formControl]="posvendaForm.controls['qualplano']"
+                      placeholder="Qual?">
+                  </mat-form-field>
+                  <small
+                    *ngIf="posvendaForm.controls['qualplano'].hasError('required') &&posvendaForm.controls['qualplano'].touched"
+                    class="form-error-msg">
+                    Obrigatório </small>
+                </div>
+                <div fxFlex="80" class="full-width">
+                  <span>Já realizou alguma cirurgia ou ficou internado por algum motivo?</span>
+                </div>
+                <div fxFlex="20" class="full-width">
+                  <mat-slide-toggle name="realizoucirurgia" id="realizoucirurgia"
+                    [formControl]="posvendaForm.controls['realizoucirurgia']"><span
+                      *ngIf="posvendaForm.value.realizoucirurgia">Sim</span><span
+                      *ngIf="!posvendaForm.value.realizoucirurgia">Não</span></mat-slide-toggle>
+                </div>
+                <div fxFlex="80" class="full-width">
+                  <span>Usa lente de contato ou óculos?</span>
+                </div>
+                <div fxFlex="20" class="full-width">
+                  <mat-slide-toggle name="usalentedecontato" id="usalentedecontato"
+                    [formControl]="posvendaForm.controls['usalentedecontato']"><span
+                      *ngIf="posvendaForm.value.usalentedecontato">Sim</span><span
+                      *ngIf="!posvendaForm.value.usalentedecontato">Não</span></mat-slide-toggle>
+                </div>
+                <div fxFlex="80" class="full-width">
+                  <span>Tem alergia a algum medicamento ou a alguma substância?</span>
+                </div>
+                <div fxFlex="20" class="full-width">
+                  <mat-slide-toggle (change)="changeTemalergia($event)" name="temalergia" id="temalergia"
+                    [formControl]="posvendaForm.controls['temalergia']"><span
+                      *ngIf="posvendaForm.value.temalergia">Sim</span><span
+                      *ngIf="!posvendaForm.value.temalergia">Não</span></mat-slide-toggle>
+                </div>
+                <div fxFlex="100" class="pr-1" *ngIf="posvendaForm.value.temalergia">
+                  <mat-form-field class="full-width">
+                    <input matInput name="qualmedicamento" id="qualmedicamento"
+                      [formControl]="posvendaForm.controls['qualmedicamento']" placeholder="Qual?">
+                  </mat-form-field>
+                  <small
+                    *ngIf="posvendaForm.controls['qualmedicamento'].hasError('required') &&posvendaForm.controls['qualmedicamento'].touched"
+                    class="form-error-msg">
+                    Obrigatório </small>
+                </div>
+                <div fxFlex="80" class="full-width">
+                  <span>Fez algum tratamento de saúde ou teve algum exame alterado no último ano?</span>
+                </div>
+                <div fxFlex="20" class="full-width">
+                  <mat-slide-toggle name="fezalgumtratamento" id="fezalgumtratamento"
+                    [formControl]="posvendaForm.controls['fezalgumtratamento']"><span
+                      *ngIf="posvendaForm.value.fezalgumtratamento">Sim</span><span
+                      *ngIf="!posvendaForm.value.fezalgumtratamento">Não</span></mat-slide-toggle>
+                </div>
+                <div fxFlex="80" class="full-width">
+                  <span>Está fazendo uso de algum medicamento no momento?</span>
+                </div>
+                <div fxFlex="20" class="full-width">
+                  <mat-slide-toggle (change)="changeFezalgumtratamento($event)" name="usodealgummedicamento"
+                    id="usodealgummedicamento" [formControl]="posvendaForm.controls['usodealgummedicamento']"><span
+                      *ngIf="posvendaForm.value.usodealgummedicamento">Sim</span><span
+                      *ngIf="!posvendaForm.value.usodealgummedicamento">Não</span></mat-slide-toggle>
+                </div>
+                <div fxFlex="100" class="pr-1" *ngIf="posvendaForm.value.usodealgummedicamento">
+                  <mat-form-field class="full-width">
+                    <input matInput name="qualtratamento" id="qualtratamento"
+                      [formControl]="posvendaForm.controls['qualtratamento']" placeholder="Qual?">
+                  </mat-form-field>
+                  <small
+                    *ngIf="posvendaForm.controls['qualtratamento'].hasError('required') &&posvendaForm.controls['qualtratamento'].touched"
+                    class="form-error-msg">
+                    Obrigatório </small>
+                </div>
+                <div fxFlex="80" class="full-width">
+                  <span>Possui dor crônica ou fez algum tratamento para dores crônicas?</span>
+                </div>
+                <div fxFlex="20" class="full-width">
+                  <mat-slide-toggle name="possuidorcronica" id="possuidorcronica"
+                    [formControl]="posvendaForm.controls['possuidorcronica']"><span
+                      *ngIf="posvendaForm.value.possuidorcronica">Sim</span><span
+                      *ngIf="!posvendaForm.value.possuidorcronica">Não</span></mat-slide-toggle>
+                </div>
+                <div fxFlex="80" class="full-width">
+                  <span>Já teve alguma fratura ou problemas ortopédicos?</span>
+                </div>
+                <div fxFlex="20" class="full-width">
+                  <mat-slide-toggle name="jatevealgumafratura" id="jatevealgumafratura"
+                    [formControl]="posvendaForm.controls['jatevealgumafratura']"><span
+                      *ngIf="posvendaForm.value.jatevealgumafratura">Sim</span><span
+                      *ngIf="!posvendaForm.value.jatevealgumafratura">Não</span></mat-slide-toggle>
+                </div>
+                <div fxFlex="80" class="full-width">
+                  <span>O contrato foi assinado pelo (a) senhor(a)?</span>
+                </div>
+                <div fxFlex="20" class="full-width">
+                  <mat-slide-toggle name="contratofoiassinado" id="contratofoiassinado"
+                    [formControl]="posvendaForm.controls['contratofoiassinado']"><span
+                      *ngIf="posvendaForm.value.contratofoiassinado">Sim</span><span
+                      *ngIf="!posvendaForm.value.contratofoiassinado">Não</span></mat-slide-toggle>
+                </div>
+                <div fxFlex="80" class="full-width">
+                  <span>Confirmada vigência?</span>
+                </div>
+                <div fxFlex="20" class="full-width">
+                  <mat-slide-toggle name="confirmavigencia" id="confirmavigencia"
+                    [formControl]="posvendaForm.controls['confirmavigencia']"><span
+                      *ngIf="posvendaForm.value.confirmavigencia">Sim</span><span
+                      *ngIf="!posvendaForm.value.confirmavigencia">Não</span></mat-slide-toggle>
+                </div>
+                <div fxFlex="80" class="full-width">
+                  <span>Contrato coparticipativo?</span>
+                </div>
+                <div fxFlex="20" class="full-width">
+                  <mat-slide-toggle name="contratocoparticipativo" id="contratocoparticipativo"
+                    [formControl]="posvendaForm.controls['contratocoparticipativo']"><span
+                      *ngIf="posvendaForm.value.contratocoparticipativo">Sim</span><span
+                      *ngIf="!posvendaForm.value.contratocoparticipativo">Não</span></mat-slide-toggle>
+                </div>
+                <div fxFlex="80" class="full-width">
+                  <span>Confirmado vencimento?</span>
+                </div>
+                <div fxFlex="20" class="full-width">
+                  <mat-slide-toggle name="confirmovencimento" id="confirmovencimento"
+                    [formControl]="posvendaForm.controls['confirmovencimento']"><span
+                      *ngIf="posvendaForm.value.confirmovencimento">Sim</span><span
+                      *ngIf="!posvendaForm.value.confirmovencimento">Não</span></mat-slide-toggle>
+                </div>
+                <div fxFlex="80" class="full-width">
+                  <span>Carteirinha física?</span>
+                </div>
+                <div fxFlex="20" class="full-width">
+                  <mat-slide-toggle name="carteirinhafisica" id="carteirinhafisica"
+                    [formControl]="posvendaForm.controls['carteirinhafisica']"><span
+                      *ngIf="posvendaForm.value.carteirinhafisica">Sim</span><span
+                      *ngIf="!posvendaForm.value.carteirinhafisica">Não</span></mat-slide-toggle>
+                </div>
+                <div fxFlex="80" class="full-width">
+                  <span>Carências</span>
+                </div>
+                <div fxFlex="20" class="full-width">
+                  <mat-form-field class="full-width">
+                    <mat-select name="carencias" id="carencias" [formControl]="posvendaForm.controls['carencias']">
+                      <mat-option value="N">Normais</mat-option>
+                      <mat-option value="R">Reduzidas</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div fxFlex="100" class="pr-1">
+                  <mat-form-field class="full-width">
+                    <textarea matInput name="observacao" id="observacao"
+                      [formControl]="posvendaForm.controls['observacao']" placeholder="Observação"></textarea>
+                  </mat-form-field>
+                </div>
+              </div>
+            </form>
+            <mat-card-actions>
+              <span fxFlex></span>
+              <button mat-raised-button color="primary" [disabled]="!AlterarPosvenda || posvendaForm.invalid"
+                (click)="onSalvarPosvenda(true)">Salvar</button>
+              <span fxFlex=10px *ngIf="beneficiarioxposvenda_id > 0"></span>
+              <button mat-stroked-button color="accent" *ngIf="beneficiarioxposvenda_id > 0" type="button"
+                (click)="onDownloadPosvenda()">Download</button>
+            </mat-card-actions>
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+      <mat-tab *ngIf="beneficiario?.dmedicos">
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">favorite</mat-icon>Dados Médicos
+        </ng-template>
+        <ngx-datatable class="material ml-0 mr-0 ngx-datatable1" [rows]="beneficiario?.dadosmedicos"
+          [columnMode]="'force'" [headerHeight]="30" [footerHeight]="30" [rowHeight]="'auto'" [scrollbarH]="'true'"
+          [selectionType]="'single'" [selected]="selectedDadosMedicos" (select)='onSelectDadosMedicos($event)'
+          [messages]="messages">
+          <ngx-datatable-column name="" [flexGrow]="3">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <span style="color: blue;" *ngIf="row?.simnao==0">{{ row?.resposta }}</span>
+              <span style="color: red;" *ngIf="row?.simnao==1">{{ row?.resposta }}</span>
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card-content>
+</mat-card>

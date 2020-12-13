@@ -1,0 +1,231 @@
+<mat-tab-group [(selectedIndex)]="selectedIndex">
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">apps</mat-icon>Plano
+    </ng-template>
+    <mat-card class="p-1" fxFlex="100">
+      <mat-card-content class="p-0">
+        <form [formGroup]="planoForm">
+          <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutWrap="wrap">
+            <div fxFlex="50" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="plano" id="plano" [formControl]="planoForm.controls['plano']" placeholder="Plano">
+              </mat-form-field>
+            </div>
+            <div fxFlex="50" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="tipo" id="tipo" [formControl]="planoForm.controls['tipo']" placeholder="Tipo">
+              </mat-form-field>
+            </div>
+            <div fxFlex="50" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="segmentacao" id="segmentacao" [formControl]="planoForm.controls['segmentacao']"
+                  placeholder="Segmentação">
+              </mat-form-field>
+            </div>
+            <div fxFlex="50" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="registro" id="registro" [formControl]="planoForm.controls['registro']"
+                  placeholder="Registro">
+              </mat-form-field>
+            </div>
+            <div fxFlex="50" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="situacao" id="situacao" [formControl]="planoForm.controls['situacao']"
+                  placeholder="Situação">
+              </mat-form-field>
+            </div>
+            <div fxFlex="25" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="qtdevidas" id="qtdevidas" [formControl]="planoForm.controls['qtdevidas']"
+                  placeholder="Qtde de vidas">
+              </mat-form-field>
+            </div>
+            <div fxFlex="25" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="valor" id="valor" [formControl]="planoForm.controls['valor']"
+                  placeholder="Valor total">
+              </mat-form-field>
+            </div>
+            <div fxFlex="50" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="vendedor" id="vendedor" [formControl]="planoForm.controls['vendedor']"
+                  placeholder="Vendedor">
+              </mat-form-field>
+            </div>
+            <div fxFlex="50" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="telefonev" id="telefonev" [formControl]="planoForm.controls['telefonev']"
+                  placeholder="Telefone">
+              </mat-form-field>
+            </div>
+            <div fxFlex="50" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="corretora" id="corretora" [formControl]="planoForm.controls['corretora']"
+                  placeholder="Corretora">
+              </mat-form-field>
+            </div>
+            <div fxFlex="25" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="telefonec" id="telefonec" [formControl]="planoForm.controls['telefonec']"
+                  placeholder="Telefone">
+              </mat-form-field>
+            </div>
+            <div fxFlex="25" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="equipe" id="equipe" [formControl]="planoForm.controls['equipe']"
+                  placeholder="Equipe">
+              </mat-form-field>
+            </div>
+            <div fxFlex="25" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="registrada" id="registrada" [formControl]="planoForm.controls['registrada']"
+                  placeholder="Registrada em">
+              </mat-form-field>
+            </div>
+            <div fxFlex="25" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="confirmada" id="confirmada" [formControl]="planoForm.controls['confirmada']"
+                  placeholder="Confirmada em">
+              </mat-form-field>
+            </div>
+            <div fxFlex="25" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="diavencimento" id="diavencimento"
+                  [formControl]="planoForm.controls['diavencimento']" placeholder="Dia de vencimento">
+              </mat-form-field>
+            </div>
+            <div fxFlex="25" class="pr-1 pt-0">
+              <mat-form-field class="full-width">
+                <input matInput name="iniciovigencia" id="iniciovigencia"
+                  [formControl]="planoForm.controls['iniciovigencia']" [matDatepicker]="iniciovigenciaDatepicker"
+                  placeholder="Início de vigência">
+                <mat-datepicker-toggle matSuffix [for]="iniciovigenciaDatepicker"></mat-datepicker-toggle>
+              </mat-form-field>
+              <mat-datepicker #iniciovigenciaDatepicker></mat-datepicker>
+              <small
+                *ngIf="planoForm.controls['iniciovigencia'].hasError('date') && planoForm.controls['iniciovigencia'].touched"
+                class="form-error-msg">
+                Data inválida </small>
+              <small
+                *ngIf="planoForm.controls['iniciovigencia'].hasError('required') && planoForm.controls['iniciovigencia'].touched"
+                class="form-error-msg"> Início de vigencia é obrigatório </small>
+            </div>
+          </div>
+        </form>
+        <form [formGroup]="cancelamentoForm"
+          *ngIf="CancelarAdesao">
+          <div fxFlex="100" class="pr-1">
+            <mat-form-field class="full-width">
+              <input matInput name="motivo" id="motivo" [formControl]="cancelamentoForm.controls['motivo']"
+                placeholder="Motivo do cancelamento">
+            </mat-form-field>
+          </div>
+        </form>
+        <form [formGroup]="rejeitarForm"
+          *ngIf="RejeitarAdesao  && (adesao.csituacao == 'P' ||  adesao.csituacao =='X')">
+          <div fxFlex="100" class="pr-1">
+            <mat-form-field class="full-width">
+              <input matInput name="motivo" id="motivo" [formControl]="rejeitarForm.controls['motivo']"
+                placeholder="Motivo do desacordo">
+            </mat-form-field>
+          </div>
+        </form>
+        <mat-card-actions>
+          <span fxFlex="12px"></span>
+          <button mat-raised-button color="accent"
+            [disabled]="alteradoAdesao || cancelamentoForm.valid || rejeitarForm.valid" (click)="onPreaprovarAdesao()"
+            *ngIf="PreAprovarAdesao && podePreaprovar()">Pré-aprovar</button>
+          <span fxFlex="12px"></span>
+          <button mat-raised-button color="accent"
+            [disabled]="alteradoAdesao || cancelamentoForm.valid || rejeitarForm.valid" (click)="onAprovarAdesao()"
+            *ngIf="AprovarAdesao && podeAprovar()">Aprovar</button>
+          <span fxFlex="12px"></span>
+          <button mat-raised-button color="warn" [disabled]="cancelamentoForm.invalid" (click)="onCancelarAdesao()"
+            *ngIf="CancelarAdesao">Cancelar</button>
+          <span fxFlex="12px"></span>
+          <button mat-raised-button color="warn" (click)="onExcluirCancelarAdesao()"
+            *ngIf="adesao.csituacao=='E'">Excluir Cancelamento</button>
+          <span fxFlex="12px"></span>
+          <button mat-raised-button color="warn" [disabled]="rejeitarForm.invalid" (click)="onRejeitarAdesao()"
+            *ngIf="RejeitarAdesao && adesao.csituacao =='P'">Desacordo</button>
+          <span fxFlex></span>
+          <button mat-raised-button color="warn"
+            [disabled]="!alteradoAdesao || planoForm.invalid || cancelamentoForm.valid || rejeitarForm.valid"
+            (click)="onRetornarAdesao()" *ngIf="SalvarAdesao">Desfazer</button>
+          <span fxFlex="12px"></span>
+          <button mat-raised-button color="primary"
+            [disabled]="!alteradoAdesao || planoForm.invalid || cancelamentoForm.valid || rejeitarForm.valid"
+            (click)="onSalvarAdesao()" *ngIf="SalvarAdesao">Salvar Adesão</button>
+        </mat-card-actions>
+      </mat-card-content>
+    </mat-card>
+  </mat-tab>
+  <mat-tab *ngIf="planoxfaixasetarias.length">
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">supervised_user_circle</mat-icon>Faixas etárias
+    </ng-template>
+    <ngx-datatable class="material ml-0 mr-0" [rows]="planoxfaixasetarias" [columnMode]="'flex'" [headerHeight]="50"
+      [footerHeight]="50" [count]="planoxfaixasetarias.length" [limit]="10"
+      [rowHeight]="37">
+      <ngx-datatable-column name="Faixa etaria" [flexGrow]="1">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ row?.faixaetaria?.faixaetaria }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Valor" [flexGrow]="2">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ row?.valor | currency: 'BRL': 'R$' }}
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </mat-tab>
+  <mat-tab *ngIf="planoxecarencias.length">
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">alarm</mat-icon>Carências
+    </ng-template>
+    <ngx-datatable class="material ml-0 mr-0" [rows]="planoxecarencias" [columnMode]="'flex'" [headerHeight]="50"
+      [footerHeight]="50" [count]="planoxecarencias.length" [limit]="10"
+      [rowHeight]="37">
+      <ngx-datatable-column name="Especialidade" [flexGrow]="3">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ row?.grupo?.grupo }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Carência" [flexGrow]="1">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ row?.dcarencia }}
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </mat-tab>
+  <mat-tab *ngIf="planoxcoparticipacoes.length">
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">thumb_up_alt</mat-icon>Coparticipações
+    </ng-template>
+    <ngx-datatable class="material ml-0 mr-0" [rows]="planoxcoparticipacoes" [columnMode]="'flex'" [headerHeight]="50"
+      [footerHeight]="50" [count]="planoxcoparticipacoes.length" [limit]="10"
+      [rowHeight]="37">
+      <ngx-datatable-column name="Cooparticipação" [flexGrow]="3">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ row?.coparticipacao?.coparticipacao }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Valor/Perc" [flexGrow]="1">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <span *ngIf="row.tipovalor == 'V'">
+            {{ row?.valor | currency: 'BRL': 'symbol' }}
+          </span>
+          <span *ngIf="row.tipovalor == 'P'">
+            %{{row?.valor}}
+          </span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Situação" [flexGrow]="1">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ row?.situacao }}
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </mat-tab>
+</mat-tab-group>

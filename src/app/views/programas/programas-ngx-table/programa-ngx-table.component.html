@@ -1,0 +1,130 @@
+<div>
+  <mat-sidenav-container>
+    <mat-sidenav EgretSideNavToggle class="shop-sidebar" *ngIf="isSideNavOpen">
+      <div class="shop-filters-wrap">
+
+          <mat-accordion multi="true" displayMode="flat">
+            <!-- Categories -->
+            <mat-expansion-panel expanded="true">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Modulo
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <mat-select id="modulo_id" name="modulo_id" placeholder="" class="mb-1">
+                <mat-option *ngFor="let modulo of modulos" [value]="modulo.id"  (click)="pesquisarModulo(modulo.id)">
+                  {{modulo.modulo}}
+                </mat-option>
+              </mat-select>
+            </mat-expansion-panel>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Situação
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <ul class="product-categories">
+                 <li [ngClass]="{'fw-500': '' === situacao}" (click)="pesquisarSituacao('')">Todas</li>
+                 <li [ngClass]="{'fw-500': 'Ativo' === situacao}" (click)="pesquisarSituacao('Ativo')">Ativo</li>
+                 <li [ngClass]="{'fw-500': 'Inativo' === situacao}" (click)="pesquisarSituacao('Inativo')">Inativo</li>
+              </ul>
+            </mat-expansion-panel>
+          </mat-accordion>
+
+      </div>
+    </mat-sidenav>
+    <div class="shop-wrap" fxLayout="row" fxLayoutWrap="wrap">
+      <!-- Filters -->
+      <!-- Right side -->
+      <div class="full-width">
+        <!-- Search Form -->
+        <div fxLayout="row" fxLayout.lt-sm="column" class="shop-top-toolbar">
+        <button mat-icon-button class="mr-1" (click)="toggleSideNav()"><mat-icon>short_text</mat-icon> </button>
+              <form [formGroup]="filterForm">
+                <div fxFlex="100" fxFlex.gt-xs="60" class="pr-1">
+                  <div class="pb-1">
+                    <mat-form-field class="full-width default-bg">
+                      <mat-select name="pesquisarpor"
+                        [(ngModel)]="pesquisarpor"  placeholder="Por" class="mb-1" [formControl]="filterForm.controls['pesquisarpor']">
+                        <mat-option  value="name" ngDefaultControl>Nome</mat-option>
+                        <mat-option  value="sequencia" ngDefaultControl>Sequência</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div fxFlex="100" fxFlex.gt-xs="60" class="pr-1">
+                  <div class="pb-1">
+                    <mat-form-field class="full-width default-bg">
+                        <input matInput name="searchProduct" placeholder="Pesquisar" class="mb-1" [formControl]="filterForm.controls['search']">
+                    </mat-form-field>
+                  </div>
+                </div>
+              </form>
+              <!-- View change buttons and cart -->
+              <button mat-mini-fab color="primary" class="mr-1" (click)="pesquisarProgramas()" [disabled]="filterForm.invalid"><mat-icon>search</mat-icon></button>
+              <span fxFlex></span>
+              <span fxFlex="20px"></span>
+              <button mat-mini-fab color="warn" class="mr-1" (click)="openPopUp({}, true)" [disabled]="!InserirPrograma"><mat-icon>create</mat-icon></button>
+        </div>
+        <!-- Products container -->
+        <div  *ngIf="programas.length">
+        <mat-card class="p-0" [@animate]="{value:'*',params:{y:'50px',delay:'300ms'}}">
+        <mat-card-content class="p-0">
+          <ngx-datatable
+                class="material ml-0 mr-0"
+                [rows]="programas"
+                [columnMode]="'force'"
+                [headerHeight]="50"
+                [footerHeight]="50"
+                [limit]="10"
+                [rowHeight]="'auto'">
+                <ngx-datatable-column name="Módulo" [flexGrow]="1">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row?.modulo.modulo }}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Nome" [flexGrow]="1">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row?.name }}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Ícone" [flexGrow]="1">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row?.icon }}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Tipo" [flexGrow]="1">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row?.type }}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Dica Ferram" [flexGrow]="1">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row?.tooltip }}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Sequência" [flexGrow]="1">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row?.sequencia }}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Situação" [flexGrow]="1">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row?.situacao }}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Ação" [flexGrow]="1">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    <button mat-icon-button mat-sm-button color="primary" class="mr-1" (click)="openPopUp(row)" [disabled]="!AlterarPrograma"><mat-icon>edit</mat-icon></button>
+                    <button mat-icon-button mat-sm-button color="warn" (click)="deleteItem(row)" [disabled]="!ExcluirPrograma || row?.permissions_count > 0"><mat-icon>delete</mat-icon></button>
+                  </ng-template>
+                </ngx-datatable-column>
+              </ngx-datatable>
+        </mat-card-content>
+      </mat-card>
+        </div>
+        <!-- End Products container -->
+      </div>
+    </div>
+  </mat-sidenav-container>
+</div>

@@ -1,0 +1,155 @@
+<!-- pesquisa -->
+<div class="m-1" *ngIf="!formulario">
+  <form [formGroup]="filterForm">
+    <div fxFlex="100" fxFlex.gt-xs="60" class="pr-1">
+      <div class="pb-1">
+        <mat-form-field class="full-width default-bg">
+          <mat-select name="pesquisarpor" id="pesquisarpor" placeholder="Por" class="mb-1" [formControl]="filterForm.controls['pesquisarpor']">
+            <mat-option value="procedimento" ngDefaultControl>Procedimento</mat-option>
+            <mat-option value="sequencia" ngDefaultControl>Sequencia</mat-option>
+            <mat-option value="situacao" ngDefaultControl>Situação</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div fxFlex="100" fxFlex.gt-xs="60" class="pr-1">
+      <div class="pb-1">
+        <mat-form-field class="full-width default-bg">
+          <input matInput name="searchProduct" placeholder="Pesquisar" class="mb-1" [formControl]="filterForm.controls['search']">
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
+  <button mat-mini-fab color="primary" class="mr-1" (click)="pesquisarPlanoxprocedimentos()" [disabled]="filterForm.invalid"
+    matTooltip="Pesquisar procedimento">
+    <mat-icon>search</mat-icon>
+  </button>
+  <button mat-mini-fab color="primary" class="mr-1" (click)="todosPlanoxprocedimentos()" matTooltip="Listar todos procedimentos"><mat-icon>list</mat-icon></button>
+  <span fxFlex="10px"></span>
+  <button mat-mini-fab color="warn" class="mr-1" (click)="abrirFormulario(0)" [disabled]="!InserirPlanoxprocedimento" *ngIf="!formulario"
+    matTooltip="Inserir procedimento">
+    <mat-icon>create</mat-icon>
+  </button>
+</div>
+<!-- fim pesquisa -->
+
+<!-- Formulário -->
+<div *ngIf="formulario">
+  <mat-card class="p-0">
+    <mat-card-content>
+      <mat-card-header class="pb-1">
+        <div *ngIf="id==0">
+          <h5 class="pb-1">
+            <strong> Novo </strong> Procedimento</h5>
+          <mat-divider></mat-divider>
+        </div>
+        <div *ngIf="id>0">
+          <h5 class="pb-1">
+            <strong> Alterar </strong> Procedimento</h5>
+          <mat-divider></mat-divider>
+        </div>
+      </mat-card-header>
+      <form [formGroup]="planoxprocedimentoForm" (ngSubmit)="submit()">
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutWrap="wrap">
+
+          <div fxFlex="100" class="pr-1 pt-1">
+            <mat-form-field class="full-width">
+              <mat-select name="procedimento_id" id="procedimento_id" [formControl]="planoxprocedimentoForm.controls['procedimento_id']"
+                placeholder="Procedimento" class="mb-1">
+                <mat-option *ngFor="let procedimento of procedimentos" [value]="procedimento.id">
+                  {{procedimento.procedimento}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <small *ngIf="planoxprocedimentoForm.controls['procedimento_id'].hasError('required') && planoxprocedimentoForm.controls['procedimento_id'].touched"
+              class="form-error-msg">
+              O procedimento é obrigatório </small>
+
+            <mat-form-field class="full-width">
+              <mat-select name="roldecobertura_id" id="roldecobertura_id" [formControl]="planoxprocedimentoForm.controls['roldecobertura_id']"
+                placeholder="Cobertura" class="mb-1">
+                <mat-option *ngFor="let roldecobertura of roldecoberturas" [value]="roldecobertura.id">
+                  {{roldecobertura.roldecobertura}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <small *ngIf="planoxprocedimentoForm.controls['roldecobertura_id'].hasError('required') && planoxprocedimentoForm.controls['roldecobertura_id'].touched"
+              class="form-error-msg">
+              A cobertura é obrigatório </small>
+
+            <div class="pr-1">
+              <span>Sequência</span>
+            </div>
+
+            <mat-slider color="primary" [step]="10" [max]="999" [min]="10" [style.width]="'100%'" [thumbLabel]="true" name="sequencia"
+              id="sequencia" [formControl]="planoxprocedimentoForm.controls['sequencia']">
+              <small *ngIf="planoxprocedimentoForm.controls['sequencia'].hasError('sequencia') && planoxprocedimentoForm.controls['sequencia'].touched"
+                class="form-error-msg">
+                A sequência é obrigatória
+              </small>
+            </mat-slider>
+          </div>
+
+          <mat-form-field class="full-width">
+            <mat-select name="situacao" [formControl]="planoxprocedimentoForm.controls['situacao']" placeholder="Situação" class="mb-1">
+              <mat-option value="Ativo" ngDefaultControl>Ativo</mat-option>
+              <mat-option value="Inativo" ngDefaultControl>Inativo</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <small *ngIf="planoxprocedimentoForm.controls['situacao'].hasError('required') && planoxprocedimentoForm.controls['situacao'].touched"
+            class="form-error-msg">
+            A situação é obrigatória </small>
+
+          <div fxFlex="100" class="mt-1">
+            <button mat-raised-button color="primary" [disabled]="planoxprocedimentoForm.invalid">Salvar</button>
+            <span fxFlex></span>
+            <button mat-stroked-button color="primary" type="button" (click)="cancelarFormulario()">Cancelar</button>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+<!-- fim formulário -->
+
+<!-- Tabela  -->
+<div *ngIf="planoxprocedimentos.length && !formulario">
+  <mat-card class="p-0">
+    <ngx-datatable class="material ml-0 mr-0" [rows]="planoxprocedimentos" [columnMode]="'flex'" [headerHeight]="50" [footerHeight]="50"
+      [externalPaging]="true" [count]="page_totalElements" [offset]="page_pageNumber" [limit]="page_size" (page)='paginacao($event)'
+      [rowHeight]="40">
+
+      <ngx-datatable-column name="Cobertura" [flexGrow]="2">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ row?.roldecobertura.roldecobertura }}
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column name="Procedimento" [flexGrow]="2">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ row?.procedimento?.procedimento }}
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column name="Situação" [flexGrow]="1">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ row?.situacao }}
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column name="Ação" [flexGrow]="1">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <button mat-icon-button mat-sm-button color="primary" class="mr-1" (click)="abrirFormulario(row.id )" [disabled]="!AlterarPlanoxprocedimento"
+            matTooltip="Editar Faixa etaria">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button mat-sm-button color="warn" (click)="removerPlanoxprocedimento(row)" [disabled]="!ExcluirPlanoxprocedimento "
+            matTooltip="Excluir faixa etaria">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </mat-card>
+</div>
+<!-- fim tabela -->

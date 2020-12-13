@@ -1,0 +1,60 @@
+<h1 matDialogTitle>{{data.title}}</h1>
+
+<form [formGroup]="moduloForm" (ngSubmit)="submit()">
+
+  <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutWrap="wrap">
+
+    <div fxFlex="100" class="pr-1">
+      <mat-form-field class="full-width">
+        <input matInput name="modulo" id="modulo" [formControl]="moduloForm.controls['modulo']" placeholder="Módulo">
+      </mat-form-field>
+      <small *ngIf="moduloForm.controls['modulo'].hasError('required') && moduloForm.controls['modulo'].touched" class="form-error-msg">
+        O Modulo é obrigatório
+      </small>
+    </div>
+
+    <div fxFlex="100" class="pr-1">
+    <span>Sequência</span>
+  </div>
+    <div fxFlex="100" fxLayout="row" >
+    <div fxFlex="100" fxLayout="row" class="pt-0">
+      <mat-slider color="primary" [step]="10" [max]="10000"
+      [min]="10" [style.width]="'100%'"
+      [thumbLabel]="true" name="sequencia" id="sequencia"
+      [formControl]="moduloForm.controls['sequencia']">
+      <small *ngIf="moduloForm.controls['sequencia'].hasError('sequencia') && moduloForm.controls['sequencia'].touched" class="form-error-msg">
+        A sequência é obrigatória
+      </small>
+    </mat-slider>
+    </div>
+  </div>
+
+  <div fxFlex="100" fxLayout="row">
+    <div fxFlex="100">
+      <mat-form-field class="full-width">
+        <input matInput type="icone" name="icone" id="icone" [formControl]="moduloForm.controls['icone']" placeholder="Icone">
+      </mat-form-field>
+      <small *ngIf="moduloForm.controls['icone'].hasError('maxLength') && moduloForm.controls['icone'].touched" class="form-error-msg">
+        Tamanho máximo é de 100 caracters
+      </small>
+    </div>
+  </div>
+
+    <div fxflex="50" class="pr-1">
+      <mat-form-field class="full-width">
+        <mat-select name="situacao" formControlName="situacao" placeholder="Situação" class="mb-1">
+          <mat-option value="Ativo" ngDefaultControl>Ativo</mat-option>
+          <mat-option value="Inativo" ngDefaultControl>Inativo</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <small *ngIf="moduloForm.controls['situacao'].hasError('required') && moduloForm.controls['situacao'].touched" class="form-error-msg">
+        A situação é obrigatória </small>
+    </div>
+
+    <div fxFlex="100" class="mt-1">
+      <button mat-raised-button color="primary" [disabled]="moduloForm.invalid">Save</button>
+      <span fxFlex></span>
+      <button mat-button color="warn" type="button" (click)="dialogRef.close(false)">Cancel</button>
+    </div>
+  </div>
+</form>

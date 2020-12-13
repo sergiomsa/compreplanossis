@@ -1,0 +1,10 @@
+.pt-1{
+  padding-top: 2px !important;
+}
+
+.ml-1{
+ padding-left: 50px !important;
+}
+.ngx-datatable-cell-template{
+  background-color: darkblue;
+}

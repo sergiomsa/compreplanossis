@@ -1,0 +1,252 @@
+<div class="shop-wrap" fxLayout="row" fxLayoutWrap="wrap">
+  <div class="full-width" *ngIf="!formulario">
+    <!-- Search Form -->
+    <div fxLayout="row" fxLayout.lt-sm="column" class="shop-top-toolbar">
+      <form [formGroup]="filterForm">
+
+        <div fxFlex="100" fxFlex.gt-xs="30" class="pr-1" *ngIf="tiposdeplano.length > 1">
+          <div class="pb-1">
+            <mat-form-field class="full-width default-bg">
+              <mat-select name="tipodeplano_id" id="tipodeplano_id" [formControl]="filterForm.controls['tipodeplano_id']" placeholder="Tipo de plano">
+              <mat-option *ngFor="let tipodeplano of tiposdeplano" [value]="tipodeplano.id">
+                {{tipodeplano.tipodeplano}}
+              </mat-option>
+            </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div fxFlex="100" fxFlex.gt-xs="30" class="pr-1">
+          <div class="pb-1">
+            <mat-form-field class="full-width default-bg">
+              <mat-select name="pesquisarpor" id="pesquisarpor" placeholder="Por"
+                (selectionChange)="changePesquisarPor($event)" [formControl]="filterForm.controls['pesquisarpor']">
+                <mat-option value="">Todos</mat-option>
+                <mat-option value="vendedor">Vendedor</mat-option>
+                <mat-option value="corretora">Corretora</mat-option>
+                <mat-option value="id">NºAdesão</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        
+        <div fxFlex="100" fxFlex.gt-xs="30" class="pr-1" *ngIf="filterForm.value.pesquisarpor!=''">
+          <div class="pb-1">
+            <mat-form-field class="full-width default-bg">
+              <input matInput name="search" id="search" placeholder="{{titulo}}"
+                [formControl]="filterForm.controls['search']">
+            </mat-form-field>
+          </div>
+        </div>
+        <div fxFlex="100" fxFlex.gt-xs="30" class="pr-1" *ngIf="filterForm.value.pesquisarpor!='id'">
+          <mat-form-field class="full-width">
+            <mat-select id="csituacao" name="csituacao" [formControl]="filterForm.controls['csituacao']"
+              placeholder="Situação" (click)="clearAdesao()">
+              <mat-option value="R" *ngIf="ListarAdesoesRegistrada">Registrada</mat-option>
+              <mat-option value="PP" *ngIf="ListarAdesoesPendente">Pendente</mat-option>
+              <mat-option value="CC" *ngIf="ListarAdesoesConfirmada">Confirmada</mat-option>
+              <mat-option value="C" *ngIf="ListarAdesoesNpreaprovada">Não pre-aprovada</mat-option>
+              <mat-option value="C" *ngIf="ListarAdesoesNaprovada">Não aprovada</mat-option>
+              <mat-option value="D" *ngIf="ListarAdesoesDocumentacao">Documentação</mat-option>
+              <mat-option value="P" *ngIf="ListarAdesoesPreaprovada">Pre-aprovada</mat-option>
+              <mat-option value="E" *ngIf="ListarAdesoesCancelada">Cancelada</mat-option>
+              <mat-option value="A" *ngIf="ListarAdesoesAprovada">Aprovada</mat-option>
+              <mat-option value="X" *ngIf="ListarAdesoesRejeitada">Rejeitada</mat-option>
+              <mat-option value="I" *ngIf="ListarAdesoesImplantadas">Implantada</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div fxFlex="100" fxFlex.gt-xs="30" class="pr-1" *ngIf="filterForm.value.pesquisarpor!='id'">
+          <mat-form-field>
+            <input matInput name="datainicio" id="datainicio" [formControl]="filterForm.controls['datainicio']"
+              placeholder="Data início" [matDatepicker]="datainicioDatepicker">
+            <mat-datepicker-toggle matSuffix [for]="datainicioDatepicker"></mat-datepicker-toggle>
+          </mat-form-field>
+          <mat-datepicker #datainicioDatepicker></mat-datepicker>
+        </div>
+        <div fxFlex="100" fxFlex.gt-xs="30" class="pr-1" *ngIf="filterForm.value.pesquisarpor!='id'">
+          <mat-form-field>
+            <input matInput name="datafim" id="datafim" [formControl]="filterForm.controls['datafim']"
+              placeholder="Data fim" [matDatepicker]="datafimDatepicker">
+            <mat-datepicker-toggle matSuffix [for]="datafimDatepicker"></mat-datepicker-toggle>
+          </mat-form-field>
+          <mat-datepicker #datafimDatepicker></mat-datepicker>
+        </div>
+      </form>
+      <!-- View change buttons and cart -->
+      <button mat-mini-fab color="primary" class="mr-1" (click)="pesquisarAdesoes()" [disabled]="filterForm.invalid"
+        matTooltip="Pesquisar">
+        <mat-icon>search</mat-icon>
+      </button>
+      <button mat-mini-fab color="secundary" class="mr-1" (click)="exportarAdesoes()" [disabled]="filterForm.invalid"
+        matTooltip="Exportar adesoes">
+        <mat-icon>cloud_download</mat-icon>
+      </button>
+      <button mat-mini-fab color="primary" class="mr-1" matTooltip="Pre-aprovar Adesão"
+        *ngIf="filterForm.value.csituacao[0]=='C' && selectedAdesao.length > 0 && selectionType()=='checkbox' && PreAprovarAdesao"
+        (click)="preaprovarAdesao()">
+        <mat-icon>check_box</mat-icon>
+      </button>
+      <button mat-mini-fab color="primary" class="mr-1" matTooltip="Aprovar Adesão"
+      *ngIf="filterForm.value.csituacao[0]=='C' && selectedAdesao.length > 0 && selectionType()=='checkbox' && AprovarAdesao"
+      (click)="aprovarAdesao()">
+      <mat-icon>check_box</mat-icon>
+      </button>
+      <button mat-mini-fab color="accent" class="mr-1" matTooltip="Aprovar Adesão"
+        *ngIf="filterForm.value.csituacao[0]=='P' && selectedAdesao.length > 0 && selectionType()=='checkbox' && AprovarAdesao"
+        (click)="aprovarAdesao()">
+        <mat-icon>check_box</mat-icon>
+      </button>
+      <button mat-mini-fab color="accent" class="mr-1" matTooltip="Implantar Adesão"
+      *ngIf="filterForm.value.csituacao[0]=='A' && selectedAdesao.length > 0 && selectionType()=='checkbox' && ImplantarAdesao"
+      (click)="implantarAdesao()">
+      <mat-icon>check_box</mat-icon>
+      </button>
+      <div fxFlex="10" class="pr-1" *ngIf="filterForm.value.csituacao[0]=='A'">
+        <mat-form-field class="full-width">
+          <mat-select name="integracao_id" id="integracao_id" 
+            [formControl]="filterForm.controls['integracao_id']"
+            placeholder="Exportar para">
+            <mat-option *ngFor="let integracao of integracoes" [value]="integracao.id">
+              {{integracao.integracao}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <button mat-mini-fab 
+        color="accent" 
+        class="mr-1" 
+        matTooltip="Exportar"
+        (click)="exportarAdesoesIntegracao()"
+        [disabled]="filterForm.value.integracao_id == 0"
+        *ngIf="filterForm.value.csituacao[0]=='A'">
+      <mat-icon>cloud_download</mat-icon>
+      </button>
+    </div>
+    <!-- Products container -->
+    <div *ngIf="adesoes.length > 0">
+      <mat-card class="p-0" fxFlex="100">
+        <mat-card-content class="p-0">
+          <ngx-datatable #TableAdesao class="material ml-0 mr-0" [rows]="adesoes" [columnMode]="'flex'"
+            [headerHeight]="50" [footerHeight]="50" [limit]="page_size" [externalPaging]="true"
+            [count]="page_totalElements" [offset]="page_pageNumber" [limit]="page_size" (page)='paginacao($event)'
+            [selected]="selectedAdesao" [selectionType]="selectionType()" (select)='onSelectAdesao($event)'
+            (sort)="onOrdenar($event)" [sorts]="[{prop: 'id', dir: 'desc'}]" [rowHeight]="35"
+            [messages]="messages">
+            <!-- Row Detail Template -->
+            <ngx-datatable-row-detail [rowHeight]="'100%'" #myDetailRow (toggle)="onDetailToggle($event)">
+              <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+                <div style="padding-left:40px;">
+                  <div>Vendedor: {{row?.vendedor?.nome}}</div>
+                  <div>Corretora: {{row?.corretora?.corretora}}</div>
+                </div>
+              </ng-template>
+            </ngx-datatable-row-detail>
+            <ngx-datatable-column [flexGrow]="0" [sortable]="false">
+              <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+                <a href="javascript:void(0)" [class.datatable-icon-right]="!expanded"
+                  [class.datatable-icon-down]="expanded" title="Expand/Collapse Row"
+                  (click)="$event.preventDefault(); $event.stopPropagation();toggleExpandRow(row)">
+                </a>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column [flexGrow]="1" [width]="10" [sortable]="false" [canAutoResize]="false"
+              [draggable]="false" [resizeable]="false" [headerCheckboxable]="true" [checkboxable]="true"
+              *ngIf="selectionType()=='checkbox'">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Nº" prop="id" [flexGrow]="1">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <span [ngStyle]="{'color': atribuirCorAdesao(row?.csituacao) }">{{ row?.id }}</span>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Titular/Resp" [sortable]="false" [flexGrow]="3">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <span [ngStyle]="{'color': atribuirCorAdesao(row?.csituacao) }">{{ row?.nome_titular_resp }}</span>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Plano" prop="plano_id" [flexGrow]="2">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <span [ngStyle]="{'color': atribuirCorAdesao(row?.csituacao) }">{{ row?.plano?.plano }}</span>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="QtVidas" [sortable]="false" [flexGrow]="1">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <span [ngStyle]="{'color': atribuirCorAdesao(row?.csituacao) }">{{ row?.qtdevidas }}</span>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Valor" [sortable]="false" [flexGrow]="1">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <span
+                  [ngStyle]="{'color': atribuirCorAdesao(row?.csituacao) }">{{ row?.valor | currency: 'BRL': 'R$' }}</span>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Dia Venc" prop="diavencimento" [flexGrow]="1">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <span [ngStyle]="{'color': atribuirCorAdesao(row?.csituacao) }">{{ row?.diavencimento }}</span>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Vigencia em" prop="iniciovigencia" [flexGrow]="1">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <span [ngStyle]="{'color': atribuirCorAdesao(row?.csituacao) }">{{ row?.iniciovigenciaat }}</span>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Registrado em" prop="created_at" [flexGrow]="1">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <span [ngStyle]="{'color': atribuirCorAdesao(row?.csituacao) }">{{ row?.createdat }}</span>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Confirmado em" prop="confirmado_at" [flexGrow]="1">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <span [ngStyle]="{'color': atribuirCorAdesao(row?.csituacao) }">{{ row?.confirmadoat }}</span>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Situação" prop="csituacao" [flexGrow]="1">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <span [ngStyle]="{'color': atribuirCorAdesao(row?.csituacao) }">{{ row?.situacao }}</span>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column [sortable]="false" name="" [flexGrow]="1">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <button mat-icon-button mat-sm-button color="primary" class="mr-1"
+                  (click)="$event.preventDefault(); $event.stopPropagation(); onClickAdesao(row)"
+                  matTooltip="Selecionar">
+                  <mat-icon>more_horiz</mat-icon>
+                </button>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="" [flexGrow]="1">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <button mat-icon-button mat-sm-button color="primary" (click)="downloadContrato(row?.id)"
+                  [disabled]="row?.podebaixar =='N' || !BaixarContratoAdesao" matTooltip="Download Contrato">
+                  <mat-icon>cloud_download</mat-icon>
+                </button>
+              </ng-template>
+            </ngx-datatable-column>
+          </ngx-datatable>
+        </mat-card-content>
+      </mat-card>
+    </div> 
+  </div>
+  <div class="full-width" [hidden]="!formulario">
+    <mat-card>
+      <mat-button-toggle-group name="opcoes" #group="matButtonToggleGroup" [value]="selectedVal"
+        (change)="onValChange(group.value)">
+        <mat-button-toggle value="Plano" (click)="formularioPlano()">Adesão Nº {{id}}</mat-button-toggle>
+        <mat-button-toggle value="{{beneficiario.tipo}}" (click)="formularioBeneficiario(beneficiario.id)"
+          *ngFor="let beneficiario of beneficiarios">
+          {{beneficiario.tipo}}</mat-button-toggle>
+      </mat-button-toggle-group>
+      <mat-card-content class="pt-1">
+        <app-adesaoc-frm  [adesao_id]="id" *ngIf="selectedVal=='Plano'" (saida)="getAcaoAdesao($event)"></app-adesaoc-frm>
+        <app-beneficiario-frm  [beneficiario_id]="beneficiario_id" *ngIf="selectedVal!='Plano' && beneficiario_id > 0"></app-beneficiario-frm>
+      </mat-card-content>
+      <mat-card-actions>
+        <span fxFlex></span>
+        <button mat-stroked-button color="primary" type="button" (click)="onVoltarAdesao()">Voltar</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

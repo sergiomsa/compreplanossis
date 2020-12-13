@@ -1,0 +1,42 @@
+<form [formGroup]="respostaForm">
+  <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutWrap="wrap">
+
+    <h6>{{data.pergunta}}</h6>
+
+    <div fxFlex="100" class="full-width">
+      <mat-slide-toggle (change)="changeSimNao($event)" name="simnao" id="simnao" [formControl]="respostaForm.controls['simnao']"><span *ngIf="respostaForm.value.simnao">Sim</span><span *ngIf="!respostaForm.value.simnao">Não</span></mat-slide-toggle>
+    </div>
+
+    <div fxFlex="100" class="pr-1" *ngIf="respostaForm.value.simnao">
+      <mat-form-field class="full-width">
+        <input matInput name="data" id="data"
+          [formControl]="respostaForm.controls['data']"
+          [matDatepicker]="dataDatepicker" placeholder="Data">
+        <mat-datepicker-toggle matSuffix [for]="dataDatepicker">
+        </mat-datepicker-toggle>
+      </mat-form-field>
+      <mat-datepicker #dataDatepicker></mat-datepicker>
+      <small
+        *ngIf="respostaForm.controls['data'].hasError('required') && respostaForm.controls['data'].touched"
+        class="form-error-msg"> obrigatória </small>
+      <small
+        *ngIf="respostaForm.controls['data'].hasError('date') && respostaForm.controls['data'].touched"
+        class="form-error-msg"> Data inválida </small>
+    </div>
+
+    <div fxFlex="100" class="pr-1" *ngIf="respostaForm.value.simnao">
+      <mat-form-field class="full-width">
+        <input matInput name="quadrogeral" id="quadrogeral" [formControl]="respostaForm.controls['quadrogeral']" placeholder="Quadro geral">
+      </mat-form-field>
+      <small *ngIf="respostaForm.controls['quadrogeral'].hasError('quadrogeral') && respostaForm.controls['quadrogeral'].touched" class="form-error-msg">
+     Obrigatório
+      </small>
+    </div>
+
+    <div fxFlex="100" class="mt-1">
+      <button mat-raised-button color="primary" [disabled]="respostaForm.invalid" (click)="submit()" matTooltip="Salvar registro">Salvar</button>
+      <span fxFlex></span>
+      <button mat-button color="warn" type="button" (click)="dialogRef.close(false)" matTooltip="Voltar sem salvar">Voltar</button>
+    </div>
+  </div>
+</form>

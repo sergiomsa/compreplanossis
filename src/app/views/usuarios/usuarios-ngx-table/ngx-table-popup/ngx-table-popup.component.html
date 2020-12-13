@@ -1,0 +1,95 @@
+<h1 matDialogTitle>{{data.title}}</h1>
+
+<form [formGroup]="usuarioForm" (ngSubmit)="submit()">
+
+  <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutWrap="wrap">
+
+    <div fxFlex="45" class="pr-1">
+      <mat-form-field class="full-width">
+        <input matInput name="name" id="name" [formControl]="usuarioForm.controls['name']" placeholder="Nome">
+      </mat-form-field>
+      <small *ngIf="usuarioForm.controls['name'].hasError('required') && usuarioForm.controls['name'].touched" class="form-error-msg">
+      O Nome é obrigatório
+      </small>
+    </div>
+
+    <div fxFlex="45" class="pr-1">
+      <mat-form-field class="full-width">
+        <input matInput type="email" name="email" id="email" [formControl]="usuarioForm.controls['email']" placeholder="Email">
+      </mat-form-field>
+      <small *ngIf="usuarioForm.controls['email'].hasError('required') && usuarioForm.controls['email'].touched" class="form-error-msg">
+        E-mail do usuario é obrigatório
+      </small>
+      <small *ngIf="usuarioForm.controls['email'].hasError('email') && usuarioForm.controls['email'].touched" class="form-error-msg">
+        E-mail inválido
+      </small>
+    </div>
+
+    <div fxFlex="90" class="pt-0">
+      <mat-form-field class="full-width">
+        <mat-select name="role_id" formControlName="role_id" placeholder="Papéis" class="mb-1" multiple>
+          <mat-option *ngFor="let role of roles" [value]="role.id">
+            {{role.nome}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <small *ngIf="usuarioForm.controls['role_id'].hasError('required') && usuarioForm.controls['role_id'].touched"
+        class="form-error-msg"> Papel é obrigatório </small>
+    </div>
+
+    <div fxFlex="90" class="pt-0">
+      <mat-form-field class="full-width">
+        <mat-select name="tipodeplano_id" formControlName="tipodeplano_id" placeholder="Tipos de plano" class="mb-1" multiple>
+          <mat-option *ngFor="let tipodeplano of tiposdeplano" [value]="tipodeplano.id">
+            {{tipodeplano.tipodeplano}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div> 
+    
+    <div fxFlex="90" class="pt-0">
+      <mat-form-field class="full-width">
+        <mat-select name="operadora_id" formControlName="operadora_id" placeholder="Operadoras" class="mb-1" multiple>
+          <mat-option *ngFor="let operadora of operadoras" [value]="operadora.id">
+            {{operadora.operadora}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div> 
+
+    <div fxFlex="90" class="pt-0">
+      <mat-form-field class="full-width">
+        <mat-select name="corretora_id" formControlName="corretora_id" placeholder="Corretoras" class="mb-1" multiple>
+          <mat-option *ngFor="let corretora of corretoras" [value]="corretora.id">
+            {{corretora.cnpj}} - {{corretora.corretora}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>  
+
+	<h6 *ngIf="data?.payload.id">Caso não queira modificar a senha, não informe a senha e o confirme a senha</h6>
+	
+    <div fxFlex="45" class="pr-1">
+      <mat-form-field class="full-width">
+        <input matInput type="password" name="senha" id="senha" [formControl]="usuarioForm.controls['senha']" placeholder="Senha">
+      </mat-form-field>
+      <small *ngIf="usuarioForm.controls['senha'].hasError('required') && usuarioForm.controls['senha'].touched" class="form-error-msg">
+        Senha é obrigatório
+      </small>
+    </div>
+
+    <div fxFlex="45" class="pr-1">
+      <mat-form-field class="full-width">
+        <input matInput type="password" name="confirSenha" id="confirSenha" [formControl]="usuarioForm.controls['confirSenha']" placeholder="Confirme a senha" >
+      </mat-form-field>
+	  <small *ngIf="usuarioForm.controls['confirSenha'].hasError('required') && usuarioForm.controls['confirSenha'].touched" class="form-error-msg">Confirmar senha é obrigatória.</small>
+      <small *ngIf="usuarioForm.controls['confirSenha'].hasError('equalTo')" class="form-error-msg">Senha e confirmar senha não confere.</small>
+    </div>
+
+    <div fxFlex="100" class="mt-1">
+      <button mat-raised-button color="primary" [disabled]="usuarioForm.invalid" matTooltip="Salvar registro">Salvar</button>
+      <span fxFlex></span>
+      <button mat-button color="warn" type="button" (click)="dialogRef.close(false)" matTooltip="Voltar sem salvar">Cancelar</button>
+    </div>
+  </div>
+</form>

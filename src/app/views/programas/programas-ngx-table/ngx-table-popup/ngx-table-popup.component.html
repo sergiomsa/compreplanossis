@@ -1,0 +1,119 @@
+<h1 matDialogTitle>{{data.title}}</h1>
+<form [formGroup]="programaForm" (ngSubmit)="submit()">
+  <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutWrap="wrap">
+
+    <div fxFlex="100" class="mt-1">
+      <div fxFlex="100" class="pt-0">
+        <mat-form-field class="full-width">
+          <mat-select name="modulo_id" formControlName="modulo_id" placeholder="Modulo" class="mb-1">
+            <mat-option *ngFor="let modulo of modulos" [value]="modulo.id">
+              {{modulo.modulo}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <small *ngIf="programaForm.controls['modulo_id'].hasError('required') && programaForm.controls['modulo_id'].touched"
+          class="form-error-msg"> Modulo é obrigatório </small>
+      </div>
+    </div>
+
+    <div fxFlex="100" class="pr-1">
+      <mat-form-field class="full-width">
+        <input matInput name="name" id="name" [formControl]="programaForm.controls['name']" placeholder="Programa">
+      </mat-form-field>
+      <small *ngIf="programaForm.controls['name'].hasError('required') && programaForm.controls['name'].touched" class="form-error-msg">
+        Programa é obrigatório
+      </small>
+    </div>
+
+    <div fxFlex="100" class="pr-1">
+      <mat-form-field class="full-width">
+        <input matInput name="icon" id="icon" [formControl]="programaForm.controls['icon']" placeholder="Icone">
+      </mat-form-field>
+    </div>
+
+    <div fxFlex="100" class="pr-1">
+      <mat-form-field class="full-width">
+        <input matInput name="type" id="type" [formControl]="programaForm.controls['type']" placeholder="Tipo">
+      </mat-form-field>
+      <small *ngIf="programaForm.controls['type'].hasError('required') && programaForm.controls['type'].touched" class="form-error-msg">
+        Tipo do programa é obrigatório
+      </small>
+    </div>
+
+    <div fxFlex="100" class="pr-1">
+      <mat-form-field class="full-width">
+        <input matInput name="tooltip" id="tooltip" [formControl]="programaForm.controls['tooltip']" placeholder="Dica da Ferramenta">
+      </mat-form-field>
+      <small *ngIf="programaForm.controls['tooltip'].hasError('required') && programaForm.controls['tooltip'].touched" class="form-error-msg">
+        Dica da Ferramenta do programa é obrigatório
+      </small>
+    </div>
+
+    <div fxFlex="100" class="pr-1">
+      <mat-form-field class="full-width">
+        <input matInput name="state" id="state" [formControl]="programaForm.controls['state']" placeholder="Estado">
+      </mat-form-field>
+      <small *ngIf="programaForm.controls['state'].hasError('required') && programaForm.controls['state'].touched" class="form-error-msg">
+        Estado do programa é obrigatório
+      </small>
+    </div>
+
+	<div fxFlex="100" class="pr-0">
+        <Label>Fixar em menu </Label>
+		<mat-radio-group [formControl]="programaForm.controls['menu']">
+			<mat-radio-button value="S">Sim </mat-radio-button>
+			<mat-radio-button value="N">Não </mat-radio-button>
+		</mat-radio-group>
+       
+      <small *ngIf="programaForm.controls['menu'].hasError('required') && programaForm.controls['menu'].touched" class="form-error-msg">
+        Menu obrigatório
+      </small>
+    </div>
+	
+    <div fxFlex="100" class="pr-1">
+      <mat-form-field class="full-width">
+        <input matInput name="badges" id="badges" [formControl]="programaForm.controls['badges']" placeholder="Distintivos">
+      </mat-form-field>
+      <small *ngIf="programaForm.controls['badges'].hasError('required') && programaForm.controls['badges'].touched" class="form-error-msg">
+        Distintivos do programa é obrigatório
+      </small>
+    </div>
+
+    <div fxFlex="100" class="pr-1">
+      <span>Sequência</span>
+    </div> 
+      <div fxFlex="100" fxLayout="row" >
+      <div fxFlex="100" fxLayout="row" class="pt-0">
+        <mat-slider color="primary" [step]="10" [max]="10000"
+        [min]="10" [style.width]="'100%'"
+        [thumbLabel]="true" name="sequencia" id="sequencia"
+        [formControl]="programaForm.controls['sequencia']">
+        <small *ngIf="programaForm.controls['sequencia'].hasError('sequencia') && programaForm.controls['sequencia'].touched" class="form-error-msg">
+          A sequência é obrigatória
+        </small>
+      </mat-slider>
+      </div>
+    </div>
+
+    <div fxLayout="row" fxFlex="100">
+    <div fxflex="100" class="pr-1">
+      <div class="pb-1">
+        <mat-form-field class="full-width">
+          <mat-select name="situacao" formControlName="situacao" placeholder="Situação" class="mb-1">
+            <mat-option value="Ativo" ngDefaultControl>Ativo</mat-option>
+            <mat-option value="Inativo" ngDefaultControl>Inativo</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <small *ngIf="programaForm.controls['situacao'].hasError('required') && programaForm.controls['situacao'].touched" class="form-error-msg">
+          A Situação é obrigatório </small>
+      </div>
+    </div>
+  </div>
+
+    <div fxFlex="100" class="mt-1">
+      <button mat-raised-button color="primary" [disabled]="programaForm.invalid">Save</button>
+      <span fxFlex></span>
+      <button mat-button color="warn" type="button" (click)="dialogRef.close(false)">Cancel</button>
+    </div>
+  </div>
+</form>

@@ -1,0 +1,166 @@
+<!-- pesquisa -->
+<div class="m-1">
+  <form [formGroup]="filterForm">
+    <div fxFlex="100" fxFlex.gt-xs="60" class="pr-1">
+      <div class="pb-1">
+        <mat-form-field class="full-width default-bg">
+          <mat-select name="pesquisarpor" id="pesquisarpor" placeholder="Por" class="mb-1" [formControl]="filterForm.controls['pesquisarpor']">
+            <mat-option value="grupo" ngDefaultControl>Especialidade/grupo</mat-option>
+            <mat-option value="descricao" ngDefaultControl>Descrição</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div fxFlex="100" fxFlex.gt-xs="60" class="pr-1">
+      <div class="pb-1">
+        <mat-form-field class="full-width default-bg">
+          <input matInput name="searchProduct" placeholder="Pesquisar" class="mb-1" [formControl]="filterForm.controls['search']">
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
+  <button mat-mini-fab color="primary" class="mr-1" (click)="pesquisarGrupos()" [disabled]="filterForm.invalid" matTooltip="Pesquisar grupo">
+    <mat-icon>search</mat-icon>
+  </button>
+  <button mat-mini-fab color="primary" class="mr-1" (click)="todasGrupos()" atTooltip="Pesquisar grupo">
+    <mat-icon>list</mat-icon>
+  </button>
+  <span fxFlex="20px"></span>
+  <button mat-mini-fab color="warn" class="mr-1" (click)="abrirFormulario(0)" [disabled]="!InserirGrupo" *ngIf="!formulario"
+    matTooltip="Inserir grupo">
+    <mat-icon>create</mat-icon>
+  </button>
+</div>
+<!-- fim pesquisa -->
+
+<!-- Formulário -->
+<div *ngIf="formulario">
+  <mat-card class="p-0">
+    <mat-card-content>
+      <mat-card-header class="pb-1">
+        <div *ngIf="id==0">
+          <h5 class="pb-1">
+            <strong> Nova </strong> especialidade/grupo</h5>
+          <mat-divider></mat-divider>
+        </div>
+        <div *ngIf="id>0">
+          <h5 class="pb-1">
+            <strong> Alterar </strong> especialidade/grupo</h5>
+          <mat-divider></mat-divider>
+        </div>
+      </mat-card-header>
+      <form [formGroup]="grupoForm" (ngSubmit)="submit()">
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutWrap="wrap">
+          <div fxFlex="100" class="pr-1 pt-1">
+            <mat-form-field class="full-width">
+              <input matInput name="grupo" id="grupo" [formControl]="grupoForm.controls['grupo']" placeholder="Especialidade/Grupo">
+            </mat-form-field>
+            <small *ngIf="grupoForm.controls['grupo'].hasError('required') && grupoForm.controls['grupo'].touched" class="form-error-msg">
+              A Especialidade/grupo é obrigatória
+            </small>
+            <small *ngIf="grupoForm.controls['grupo'].hasError('maxlength') && grupoForm.controls['grupo'].touched" class="form-error-msg">
+            Máximo 100 caracteres
+            </small>
+          </div>
+
+          <div fxFlex="100" class="pr-1 pt-1">
+              <mat-form-field class="full-width">
+                <input matInput name="descricao" id="descricao" [formControl]="grupoForm.controls['descricao']" placeholder="Descrição">
+              </mat-form-field>
+              <small *ngIf="grupoForm.controls['descricao'].hasError('required') && grupoForm.controls['descricao'].touched" class="form-error-msg">
+                A descrição é obrigatório
+              </small>
+              <small *ngIf="grupoForm.controls['descricao'].hasError('maxlength') && grupoForm.controls['descricao'].touched" class="form-error-msg">
+              Máximo 200 caracteres
+              </small>
+            </div>
+
+          <div fxFlex="50" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="carencia" id="carencia"  [formControl]="grupoForm.controls['carencia']" placeholder="Carência">
+              </mat-form-field>
+              <small *ngIf="grupoForm.controls['carencia'].hasError('required') && grupoForm.controls['carencia'].touched" class="form-error-msg">
+                A carencia é obrigatório </small>
+            </div>
+  
+          <div fxFlex="50" class="pr-1">
+              <mat-form-field class="full-width">
+                <mat-select name="tempo" id="tempo" [formControl]="grupoForm.controls['tempo']"  placeholder="Tempo" class="mb-1">
+                  <mat-option value="" ngDefaultControl></mat-option>
+                  <mat-option value="h" ngDefaultControl>Horas</mat-option>
+                  <mat-option value="d" ngDefaultControl>Dias</mat-option>
+                  <mat-option value="m" ngDefaultControl>Meses</mat-option>
+                  <mat-option value="a" ngDefaultControl>Anos</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+          <div fxFlex="100" class="pr-1">
+            <span>Sequência</span>
+          </div>
+          <div fxFlex="100" fxLayout="row">
+            <div fxFlex="100" fxLayout="row" class="pt-0">
+              <mat-slider color="primary" [step]="10" [max]="999" [min]="10" [style.width]="'100%'" [thumbLabel]="true" name="sequencia"
+                id="sequencia" [formControl]="grupoForm.controls['sequencia']">
+                <small *ngIf="grupoForm.controls['sequencia'].hasError('sequencia') && grupoForm.controls['sequencia'].touched" class="form-error-msg">
+                  A sequência é obrigatória
+                </small>
+              </mat-slider>
+            </div>
+          </div>
+
+          <div fxFlex="100" class="mt-1">
+            <button mat-raised-button color="primary" [disabled]="grupoForm.invalid" matTooltip="Salvar grupo">Salvar</button>
+            <span fxFlex></span>
+            <button mat-stroked-button color="primary" type="button" (click)="cancelarFormulario()" matTooltip="Voltar">Cancelar</button>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+<!-- fim formulário -->
+
+<!-- Tabela  -->
+<div *ngIf="grupos.length && !formulario">
+  <mat-card class="p-0">
+    <mat-card-content class="p-0">
+      <ngx-datatable class="material ml-0 mr-0" [rows]="grupos" [columnMode]="'flex'" [headerHeight]="50" [footerHeight]="50" [externalPaging]="true"
+        [count]="page_totalElements" [offset]="page_pageNumber" [limit]="page_size" (page)='paginacao($event)' [rowHeight]="37">
+        <ngx-datatable-column name="Especialidade/Grupo" [flexGrow]="3">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row?.grupo }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Descrição" [flexGrow]="4">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row?.descricao }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Carência" [flexGrow]="2">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row?.dcarencia }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Seq" [flexGrow]="1">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row?.sequencia }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Ação" [flexGrow]="1">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <button mat-icon-button mat-sm-button color="primary" class="mr-1" (click)="abrirFormulario(row.id )" [disabled]="!AlterarGrupo"
+              matTooltip="Alterar grupo">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button mat-sm-button color="warn" (click)="removerGrupo(row)" [disabled]="!ExcluirGrupo || row?.procedimentos_count > 0"
+              matTooltip="Excluir grupo">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </mat-card-content>
+  </mat-card>
+</div>
+<!-- fim tabela -->

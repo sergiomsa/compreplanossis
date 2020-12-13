@@ -1,0 +1,315 @@
+<!-- pesquisa -->
+<div class="m-1">
+  <form [formGroup]="filterForm">
+    <div fxFlex="100" fxFlex.gt-xs="60" class="pr-1">
+      <div class="pb-1">
+        <mat-form-field class="full-width default-bg">
+          <mat-select name="pesquisarpor" id="pesquisarpor" placeholder="Por" class="mb-1" [formControl]="filterForm.controls['pesquisarpor']">
+            <mat-option value="cpf" ngDefaultControl>CPF</mat-option>
+            <mat-option value="nome" ngDefaultControl>Vendedor</mat-option>
+            <mat-option value="administrador" ngDefaultControl>ADM</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div fxFlex="100" fxFlex.gt-xs="60" class="pr-1">
+      <div class="pb-1">
+        <mat-form-field class="full-width default-bg">
+          <input matInput name="searchProduct" placeholder="Pesquisar" class="mb-1" [formControl]="filterForm.controls['search']">
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
+  <button mat-mini-fab color="primary" class="mr-1" (click)="pesquisarVendedores()" [disabled]="filterForm.invalid"
+    matTooltip="Pesquisar Vendedores">
+    <mat-icon>search</mat-icon>
+  </button>
+  <button mat-mini-fab color="primary" class="mr-1" (click)="todasVendedores()" matTooltip="Listar todos vendedores">
+    <mat-icon>list</mat-icon>
+  </button>
+  <button mat-mini-fab color="secundary" class="mr-1" matTooltip="Downloads" (click)="exportarVendedores()">
+    <mat-icon>cloud_download</mat-icon>
+  </button>
+  <span fxFlex="10px"></span>
+  <button mat-mini-fab color="warn" class="mr-1" (click)="abrirFormulario(0)" [disabled]="!InserirVendedor" *ngIf="!formulario"
+    matTooltip="Inserir novo vendedor">
+    <mat-icon>create</mat-icon>
+  </button>
+</div>
+<!-- fim pesquisa -->
+
+<!-- Formulário -->
+<div fxLayout="row" fxLayoutWrap="wrap">
+  <div fxFlex="100" fxFlex.gt-xs="100">
+    <mat-card *ngIf="formulario">
+      <mat-card-content>
+        <mat-card-title>
+          <div class="pb-0">
+            <strong *ngIf="id==0">Novo vendedor</strong>
+            <strong *ngIf="id>0">Revisar vendedor</strong>
+          </div>
+          <mat-divider></mat-divider>
+        </mat-card-title>
+        <form [formGroup]="vendedorForm" (ngSubmit)="submit()">
+          <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutWrap="wrap">
+
+           <div fxFlex="33" class="pr-1">
+                  <mat-form-field class="full-width">
+                    <input matInput name="cpf" id="cpf" [textMask]="{mask: maskcpf}" [formControl]="vendedorForm.controls['cpf']"
+                      placeholder="CPF">
+                  </mat-form-field>
+                  <small *ngIf="vendedorForm.controls['cpf'].hasError('required') && vendedorForm.controls['cpf'].touched"
+                    class="form-error-msg">
+                    CPF obrigatório </small>
+           </div>
+
+            <div fxFlex="33" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="nome" id="nome" [formControl]="vendedorForm.controls['nome']"
+                  placeholder="Nome">
+              </mat-form-field>
+              <small *ngIf="vendedorForm.controls['nome'].hasError('required') && vendedorForm.controls['nome'].touched"
+                class="form-error-msg">
+                O nome do vendedor é obrigatório
+              </small>
+            </div>
+
+            <div fxFlex="33" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput type="email" name="email" id="email" [formControl]="vendedorForm.controls['email']"
+                  placeholder="Email">
+              </mat-form-field>
+              <small *ngIf="vendedorForm.controls['email'].hasError('required') && vendedorForm.controls['email'].touched"
+                class="form-error-msg">
+                E-mail do associado é obrigatório
+              </small>
+              <small *ngIf="vendedorForm.controls['email'].hasError('email') && vendedorForm.controls['email'].touched"
+                class="form-error-msg">
+                E-mail inválido
+              </small>
+            </div>
+
+            <div fxFlex="33" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="telefone" id="telefone" [textMask]="{mask: masktelefone}" [formControl]="vendedorForm.controls['telefone']"
+                  placeholder="Telefone Celular">
+              </mat-form-field>
+            </div>
+
+            <div fxFlex="33" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="cep" id="cep" [textMask]="{mask: maskcep}" (change)="obterCep()" [formControl]="vendedorForm.controls['cep']"
+                  placeholder="Cep">
+              </mat-form-field>
+              <small *ngIf="vendedorForm.controls['cep'].hasError('required') && vendedorForm.controls['cep'].touched"
+                class="form-error-msg">
+                CEP obrigatório </small>
+            </div>
+
+            <div fxFlex="33" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="logradouro" id="logradouro" [formControl]="vendedorForm.controls['logradouro']"
+                  placeholder="Logradouro">
+              </mat-form-field>
+              <small *ngIf="vendedorForm.controls['logradouro'].hasError('required') && vendedorForm.controls['logradouro'].touched"
+                class="form-error-msg"> Logradouro Obrigatório </small>
+            </div>
+
+            <div fxFlex="33" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput type="number" name="numero" id="numero" [formControl]="vendedorForm.controls['numero']"
+                  placeholder="Numero">
+              </mat-form-field>
+              <small *ngIf="vendedorForm.controls['numero'].hasError('required') && vendedorForm.controls['numero'].touched"
+                class="form-error-msg">
+                Numero obrigatório </small>
+            </div>
+
+            <div fxFlex="33" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="complemento" id="complemento" [formControl]="vendedorForm.controls['complemento']"
+                  placeholder="Complemento">
+              </mat-form-field>
+            </div>
+
+            <div fxFlex="33" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="bairro" id="bairro" [formControl]="vendedorForm.controls['bairro']" placeholder="Bairro">
+              </mat-form-field>
+              <small *ngIf="vendedorForm.controls['bairro'].hasError('required') && vendedorForm.controls['bairro'].touched"
+                class="form-error-msg">
+                Bairro obrigatório </small>
+            </div>
+
+            <div fxFlex="33" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="cidade" id="cidade" [formControl]="vendedorForm.controls['cidade']" placeholder="Cidade">
+              </mat-form-field>
+              <small *ngIf="vendedorForm.controls['cidade'].hasError('required') && vendedorForm.controls['cidade'].touched"
+                class="form-error-msg">
+                Cidade obrigatória </small>
+            </div>
+
+            <div fxFlex="33" class="pr-1">
+              <mat-form-field class="full-width">
+                <input matInput name="estado" id="estado" [formControl]="vendedorForm.controls['estado']" placeholder="Estado">
+              </mat-form-field>
+              <small *ngIf="vendedorForm.controls['estado'].hasError('required') && vendedorForm.controls['estado'].touched"
+                class="form-error-msg">
+                Estado obrigatório </small>
+            </div>
+
+            <div fxFlex="33" class="pt-1">
+              <mat-form-field class="full-width">
+                <mat-select name="corretora_id" formControlName="corretora_id" placeholder="Vende plano(s) para a(s) corretora(s)" class="mb-1" multiple>
+                  <mat-option *ngFor="let corretora of corretoras" [value]="corretora.id">
+                    {{corretora.corretora}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            
+            <div fxFlex="33" class="pr-1">
+              <mat-slide-toggle name="administrador" id="administrador" [formControl]="vendedorForm.controls['administrador']">Administrador</mat-slide-toggle>
+            </div>
+
+            <div fxFlex="33" class="pr-1">
+              <mat-slide-toggle name="linkpagamento" id="linkpagamento" [formControl]="vendedorForm.controls['linkpagamento']">Permite enviar link de pagamento?</mat-slide-toggle>
+            </div>
+
+            <div fxFlex="33" class="pr-1">
+              <mat-slide-toggle (change)="changeEcommerce($event)" name="ecommerce" id="ecommerce" [formControl]="vendedorForm.controls['ecommerce']">Vende por ecommerce?</mat-slide-toggle>
+            </div>
+
+            <div fxFlex="33" class="pr-1" *ngIf="vendedorForm.value.ecommerce">
+              <mat-form-field class="full-width">
+                <mat-select id="type" name="type" [formControl]="vendedorForm.controls['type']"
+                  placeholder="Tipo da conta" class="mb-1">
+                  <mat-option value="conta_corrente" ngDefaultControl>Conta corrente</mat-option>
+                  <mat-option value="conta_poupanca" ngDefaultControl>Conta poupanca</mat-option>
+                  <mat-option value="conta_corrente_conjunta" ngDefaultControl>Conta corrente conjunta</mat-option>
+                  <mat-option value="conta_poupanca_conjunta" ngDefaultControl>Conta poupanca conjunta</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <small *ngIf="vendedorForm.controls['type'].hasError('required') && vendedorForm.controls['type'].touched"
+                class="form-error-msg">
+                Tipo da conta é obrigatório </small>
+            </div>
+
+            <div fxFlex="33" class="pr-1" *ngIf="vendedorForm.value.ecommerce">
+              <mat-form-field class="full-width">
+                <mat-select name="bank_code" formControlName="bank_code" placeholder="Banco" class="mb-1">
+                  <mat-option *ngFor="let banco of bancos" [value]="banco.id">
+                    {{banco.id}} - {{banco.banco}} 
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div fxFlex="20" class="pr-1" *ngIf="vendedorForm.value.ecommerce">
+              <mat-form-field class="full-width">
+                <input matInput name="agencia" id="agencia" [formControl]="vendedorForm.controls['agencia']" placeholder="Agência">
+              </mat-form-field>
+              <small *ngIf="vendedorForm.controls['agencia'].hasError('required') && vendedorForm.controls['agencia'].touched"
+                class="form-error-msg">
+                Agência obrigatório </small>
+            </div>
+
+            <div fxFlex="13" class="pr-1" *ngIf="vendedorForm.value.ecommerce">
+              <mat-form-field class="full-width">
+                <input matInput name="agencia_dv" id="agencia_dv" [formControl]="vendedorForm.controls['agencia_dv']" placeholder="Agência Digito">
+              </mat-form-field>
+            </div>
+
+            <div fxFlex="20" class="pr-1" *ngIf="vendedorForm.value.ecommerce">
+              <mat-form-field class="full-width">
+                <input matInput name="conta" id="agencia" [formControl]="vendedorForm.controls['conta']" placeholder="Conta">
+              </mat-form-field>
+              <small *ngIf="vendedorForm.controls['conta'].hasError('required') && vendedorForm.controls['conta'].touched"
+                class="form-error-msg">
+                Conta obrigatório </small>
+            </div>
+
+            <div fxFlex="13" class="pr-1" *ngIf="vendedorForm.value.ecommerce">
+              <mat-form-field class="full-width">
+                <input matInput name="conta_dv" id="agencia" [formControl]="vendedorForm.controls['conta_dv']" placeholder="Conta Digito">
+              </mat-form-field>
+              <small *ngIf="vendedorForm.controls['conta_dv'].hasError('required') && vendedorForm.controls['conta_dv'].touched"
+                class="form-error-msg">
+                Conta digito obrigatório </small>
+            </div>
+
+            <div fxFlex="100" class="mt-1">
+              <button mat-raised-button color="primary" class="mr-1 mt-1" [disabled]="vendedorForm.invalid">Salvar</button>
+              <span fxFlex></span>
+              <button mat-stroked-button color="primary" type="button" class="mt-1" (click)="cancelarFormulario()">Cancelar</button>
+            </div>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+
+<!-- Tabela  -->
+<div *ngIf="vendedores.length && !formulario">
+  <mat-card class="p-0">
+    <mat-card-content class="p-0">
+      <ngx-datatable class="material ml-0 mr-0" [rows]="vendedores" [columnMode]="'flex'" [headerHeight]="50"
+        [footerHeight]="50" [externalPaging]="true" [count]="page_totalElements" [offset]="page_pageNumber" [limit]="page_size"
+        (page)='paginacao($event)' [rowHeight]="'auto'">
+        <ngx-datatable-column name="ID" [flexGrow]="1">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row?.id }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="CPF" [flexGrow]="1">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row?.cpf }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Nome" [flexGrow]="3">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row?.nome }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Telefone" [flexGrow]="1">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row?.telefone }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Email" [flexGrow]="2">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row?.email }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="ADM" [flexGrow]="1">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <span *ngIf="row?.administrador==1">Sim</span>
+            <span *ngIf="row?.administrador==0">Não</span>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="ECOM" [flexGrow]="1">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <span *ngIf="row?.ecommerce==1">Sim</span>
+            <span *ngIf="row?.ecommerce==0">Não</span>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Ação" [flexGrow]="1">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <button mat-icon-button mat-sm-button color="primary" class="mr-1" (click)="abrirFormulario(row.id)"
+              [disabled]="!AlterarVendedor" matTooltip="Editar vendedor">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button mat-sm-button color="warn" (click)="removerVendedor(row)" [disabled]="!ExcluirVendedor || row?.propostas_count > 0"
+              matTooltip="Excluir vendedor">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </mat-card-content>
+  </mat-card>
+</div>
+<!-- fim tabela -->
