@@ -31,9 +31,9 @@ export class AdesaocFrmComponent implements OnInit {
   public id: any;
   public valueChangeAdesao: any;
   public adesoes: any = [];
-  public planoxfaixasetarias: any = []; 
-  public planoxecarencias: any = []; 
-  public planoxcoparticipacoes: any = []; 
+  public planoxfaixasetarias: any = [];
+  public planoxecarencias: any = [];
+  public planoxcoparticipacoes: any = [];
   public adesao: any = [];
   public alteradoAdesao: boolean = false;
   public alteradoBeneficiario: boolean = false;
@@ -69,6 +69,8 @@ export class AdesaocFrmComponent implements OnInit {
       equipe:               new FormControl(''),
       registrada:           new FormControl(''),
       confirmada:           new FormControl(''),
+      preaprovada:          new FormControl(''),
+      aprovada:             new FormControl(''),
       situacao:             new FormControl(''),
       qtdevidas:            new FormControl(''),
       valor:                new FormControl(''),
@@ -94,18 +96,18 @@ export class AdesaocFrmComponent implements OnInit {
     if (this.SalvarAdesao)
     {
       this.planoForm.valueChanges.subscribe(
-        (value: string) => {     
+        (value: string) => {
           this.alteradoAdesao    = true;
       });
     }
 
     this.formularioPlano(this.adesao_id);
   }
-  
+
   ngOnChanges()
   {
   }
-  
+
   podePreaprovar()
   {
     if (this.adesao.csituacao == 'C' || this.adesao.csituacao == 'D')
@@ -125,7 +127,7 @@ export class AdesaocFrmComponent implements OnInit {
     }
 
     return false;
-    
+
   }
 
   formatarData(data) {
@@ -166,7 +168,7 @@ export class AdesaocFrmComponent implements OnInit {
   formularioPlano(id)
   {
 	  this.id 				= id;
-    
+
     this.AdesaocService.obterAdesaoConfirmada(this.id)
       .subscribe(item => {
         this.adesao               = item;
@@ -181,6 +183,8 @@ export class AdesaocFrmComponent implements OnInit {
         this.planoForm.patchValue({ equipe: item.equipe });
         this.planoForm.patchValue({ registrada: item.registrada });
         this.planoForm.patchValue({ confirmada: item.confirmada });
+        this.planoForm.patchValue({ preaprovada: item.preaprovada });
+        this.planoForm.patchValue({ aprovada: item.aprovada });
         this.planoForm.patchValue({ situacao: item.situacao });
         this.planoForm.patchValue({ qtdevidas: item.qtdevidas });
         this.planoForm.patchValue({ valor: item.valor });
@@ -214,8 +218,8 @@ export class AdesaocFrmComponent implements OnInit {
         this.alteradoAdesao             = false;
 
     });
-    
-  
+
+
   }
 
   onSalvarAdesao() {
@@ -245,7 +249,7 @@ export class AdesaocFrmComponent implements OnInit {
                this.snack.open(message, 'OK', { duration: 6000 });
           })
        );
-    
+
   }
 
   onPreaprovarAdesao()
@@ -321,7 +325,7 @@ export class AdesaocFrmComponent implements OnInit {
                this.snack.open(message, 'OK', { duration: 6000 });
           })
        );
-    
+
   }
 
   onExcluirCancelarAdesao() {
@@ -346,7 +350,7 @@ export class AdesaocFrmComponent implements OnInit {
                this.snack.open(message, 'OK', { duration: 6000 });
           })
        );
-    
+
   }
 
   onRejeitarAdesao() {

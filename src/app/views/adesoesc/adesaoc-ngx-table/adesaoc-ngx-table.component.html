@@ -29,7 +29,7 @@
             </mat-form-field>
           </div>
         </div>
-        
+
         <div fxFlex="100" fxFlex.gt-xs="30" class="pr-1" *ngIf="filterForm.value.pesquisarpor!=''">
           <div class="pb-1">
             <mat-form-field class="full-width default-bg">
@@ -47,6 +47,7 @@
               <mat-option value="CC" *ngIf="ListarAdesoesConfirmada">Confirmada</mat-option>
               <mat-option value="C" *ngIf="ListarAdesoesNpreaprovada">Não pre-aprovada</mat-option>
               <mat-option value="C" *ngIf="ListarAdesoesNaprovada">Não aprovada</mat-option>
+              <mat-option value="SC" *ngIf="ListarAdesoesScontato">Sem contato</mat-option>
               <mat-option value="D" *ngIf="ListarAdesoesDocumentacao">Documentação</mat-option>
               <mat-option value="P" *ngIf="ListarAdesoesPreaprovada">Pre-aprovada</mat-option>
               <mat-option value="E" *ngIf="ListarAdesoesCancelada">Cancelada</mat-option>
@@ -105,7 +106,7 @@
       </button>
       <div fxFlex="10" class="pr-1" *ngIf="filterForm.value.csituacao[0]=='A'">
         <mat-form-field class="full-width">
-          <mat-select name="integracao_id" id="integracao_id" 
+          <mat-select name="integracao_id" id="integracao_id"
             [formControl]="filterForm.controls['integracao_id']"
             placeholder="Exportar para">
             <mat-option *ngFor="let integracao of integracoes" [value]="integracao.id">
@@ -114,9 +115,9 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <button mat-mini-fab 
-        color="accent" 
-        class="mr-1" 
+      <button mat-mini-fab
+        color="accent"
+        class="mr-1"
         matTooltip="Exportar"
         (click)="exportarAdesoesIntegracao()"
         [disabled]="filterForm.value.integracao_id == 0"
@@ -228,7 +229,7 @@
           </ngx-datatable>
         </mat-card-content>
       </mat-card>
-    </div> 
+    </div>
   </div>
   <div class="full-width" [hidden]="!formulario">
     <mat-card>

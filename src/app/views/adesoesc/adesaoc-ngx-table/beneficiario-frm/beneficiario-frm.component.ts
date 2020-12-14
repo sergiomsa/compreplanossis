@@ -62,7 +62,7 @@ export class BeneficiarioFrmComponent implements OnInit {
   public maskhora       = [/\d/, /\d/, ':', /\d/, /\d/];
   public titulo    = "";
   public messages = { emptyMessage: 'Nenhum registro', loadingMessage: 'Carregando', totalMessage: 'registro(s)', selectedMessage: 'selecionado(s)' };
-  
+
   public AprovarAdesao: boolean;
   public ReprovarDocumento: boolean;
   public SalvarBeneficiario: boolean;
@@ -88,12 +88,12 @@ export class BeneficiarioFrmComponent implements OnInit {
     this.formularioBeneficiario(this.beneficiario_id);
   }
 
-  inicializar() 
+  inicializar()
   {
     this.page_totalElements       = 0;
     this.page_pageNumber          = 0;
     this.page_size                = 10;
-    
+
     this.beneficiarioForm = new FormGroup({
       cpf:                  new FormControl('', [Validators.required]),
       rg:                   new FormControl('', [Validators.required]),
@@ -159,7 +159,7 @@ export class BeneficiarioFrmComponent implements OnInit {
     if (this.SalvarBeneficiario)
     {
       this.beneficiarioForm.valueChanges.subscribe(
-        (value: string) => {     
+        (value: string) => {
             this.alteradoBeneficiario = true;
       });
     } else {
@@ -271,8 +271,8 @@ export class BeneficiarioFrmComponent implements OnInit {
         disableClose: true,
         data: { id: this.selectedDadosMedicos[0].id,
                 beneficiario_id: this.selectedDadosMedicos[0].beneficiario_id,
-                resposta_id:  this.selectedDadosMedicos[0].resposta_id, 
-                pergunta:  this.selectedDadosMedicos[0].pergunta, 
+                resposta_id:  this.selectedDadosMedicos[0].resposta_id,
+                pergunta:  this.selectedDadosMedicos[0].pergunta,
                 data: this.selectedDadosMedicos[0].dataf,
                 quadrogeral: this.selectedDadosMedicos[0].quadrogeral,
                 simnao: this.selectedDadosMedicos[0].simnao
@@ -289,7 +289,7 @@ export class BeneficiarioFrmComponent implements OnInit {
           });
       });
     }
-    
+
   }
 
   public onValChange(val: string) {
@@ -297,7 +297,7 @@ export class BeneficiarioFrmComponent implements OnInit {
     this.alteradoBeneficiario = false;
   }
 
- 
+
  onSalvarPosvenda(mensagem) {
 
     if (mensagem)
@@ -327,7 +327,7 @@ export class BeneficiarioFrmComponent implements OnInit {
                this.snack.open(message, 'OK', { duration: 6000 });
           })
        );
-    
+
   }
 
   changePossuiuPlano(event)
@@ -341,7 +341,7 @@ export class BeneficiarioFrmComponent implements OnInit {
     }
 
     this.posvendaForm.get('qualplano').updateValueAndValidity();
-   
+
   }
 
   changeTemalergia(event)
@@ -355,7 +355,7 @@ export class BeneficiarioFrmComponent implements OnInit {
     }
 
     this.posvendaForm.get('qualmedicamento').updateValueAndValidity();
-   
+
   }
 
   changeFezalgumtratamento(event)
@@ -371,7 +371,7 @@ export class BeneficiarioFrmComponent implements OnInit {
   }
 
   onSalvarBeneficiario() {
-    
+
     const documento			= this.fileInput.nativeElement;
     const formdata 			= new FormData();
 
@@ -424,7 +424,7 @@ export class BeneficiarioFrmComponent implements OnInit {
      );
   }
 
-  onReprovarDocumento(id) 
+  onReprovarDocumento(id)
   {
     this.loader.open();
 
@@ -448,7 +448,7 @@ export class BeneficiarioFrmComponent implements OnInit {
 
   }
 
-  onAprovarDocumento(id) 
+  onAprovarDocumento(id)
   {
     this.loader.open();
 
@@ -490,7 +490,7 @@ export class BeneficiarioFrmComponent implements OnInit {
 
   formularioBeneficiario(id)
   {
-     
+
     this.AdesaocService.obterBeneficiario(id)
       .subscribe(item => {
         this.beneficiario             = item;
@@ -563,13 +563,13 @@ export class BeneficiarioFrmComponent implements OnInit {
           this.beneficiarioForm.get('docfile').clearValidators();
           this.beneficiarioForm.get('parentesco').clearValidators();
           this.beneficiarioForm.get('nomedamae').clearValidators();
-    
+
           if (this.beneficiario.dmedicos)
           {
             this.beneficiarioForm.get('peso').setValidators([Validators.required]);
             this.beneficiarioForm.get('altura').setValidators([Validators.required]);
           }
-    
+
           if (this.beneficiario.tipo !='R')
           {
             this.beneficiarioForm.get('nomedamae').setValidators([Validators.required]);
@@ -579,7 +579,7 @@ export class BeneficiarioFrmComponent implements OnInit {
               this.beneficiarioForm.get('docfile').setValidators([Validators.required]);
             }
           }
-    
+
           if (this.beneficiario.tipo !='B')
           {
             this.beneficiarioForm.get('cep').setValidators([Validators.required]);
@@ -593,7 +593,7 @@ export class BeneficiarioFrmComponent implements OnInit {
           } else {
             this.beneficiarioForm.get('parentesco').setValidators([Validators.required]);
           }
-    
+
           this.beneficiarioForm.get('cep').updateValueAndValidity();
           this.beneficiarioForm.get('logradouro').updateValueAndValidity();
           this.beneficiarioForm.get('numero').updateValueAndValidity();
@@ -608,7 +608,7 @@ export class BeneficiarioFrmComponent implements OnInit {
           this.beneficiarioForm.get('docfile').updateValueAndValidity();
           this.beneficiarioForm.get('parentesco').updateValueAndValidity();
           this.beneficiarioForm.get('nomedamae').updateValueAndValidity();
-        } 
+        }
 
         if ((this.beneficiario.podealterar =='S') && (this.SalvarBeneficiario))
         {
@@ -618,9 +618,9 @@ export class BeneficiarioFrmComponent implements OnInit {
         }
 
         this.alteradoBeneficiario   = false;
-        
+
     });
- 
+
 
   }
 

@@ -62,7 +62,7 @@
             <input matInput name="idade" id="idade" [formControl]="beneficiarioForm.controls['idade']" placeholder="Idade" readonly>
           </mat-form-field>
         </div>
-       
+
         <div fxFlex="25" class="pr-1" *ngIf="beneficiario?.dmedicos">
           <mat-form-field class="full-width">
             <input matInput name="peso" id="peso" [formControl]="beneficiarioForm.controls['peso']" placeholder="Peso">
@@ -134,9 +134,9 @@
             CNS é obrigatória </small>
         </div>
         <div fxFlex="50" class="pr-1 full-width" [hidden]="beneficiario?.tipo =='R' || !beneficiario?.registroans">
-          
+
             <input type="file" name="docfile" id="docfile" [formControl]="beneficiarioForm.controls['docfile']" #fileInput/>
-         
+
         </div>
         <div fxFlex="50" class="pr-1">
           <mat-form-field class="full-width">

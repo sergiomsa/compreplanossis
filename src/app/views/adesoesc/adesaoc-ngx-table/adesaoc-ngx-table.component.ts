@@ -34,7 +34,7 @@ export class AdesaocNgxTableComponent implements OnInit {
   @ViewChild('TableAdesao') TableAdesao: any;
   @Input()selectedIndex: number;
   @Input()gselectedIndex: number
- 
+
   public valueChangeAdesao: any;
   public adesoes: any = [];
   public tiposdeplano: any = [];
@@ -68,11 +68,12 @@ export class AdesaocNgxTableComponent implements OnInit {
   public maskhora       = [/\d/, /\d/, ':', /\d/, /\d/];
   public titulo    = "";
   public messages = { emptyMessage: 'Nenhum registro', loadingMessage: 'Carregando', totalMessage: 'registro(s)', selectedMessage: 'selecionado(s)' };
-  
+
   public ListarAdesoesRegistrada: boolean;
   public ListarAdesoesPendente: boolean;
   public ListarAdesoesConfirmada: boolean;
   public ListarAdesoesNpreaprovada: boolean;
+  public ListarAdesoesScontato: boolean;
   public ListarAdesoesNaprovada: boolean;
   public ListarAdesoesDocumentacao: boolean;
   public ListarAdesoesPreaprovada: boolean;
@@ -87,7 +88,7 @@ export class AdesaocNgxTableComponent implements OnInit {
   public EnviarEmailContratoAdesao: boolean;
   public PreAprovarAdesao: boolean;
   public AprovarAdesao: boolean;
-  
+
   constructor(
     private dialog: MatDialog,
     private snack: MatSnackBar,
@@ -104,7 +105,7 @@ export class AdesaocNgxTableComponent implements OnInit {
     this.page_size                = 10;
     this.datainicio               = '2018-08-01';
     this.datafim                  = '2999-12-31';
-    
+
     this.filterForm             = new FormGroup({
       pesquisarpor:               new FormControl(),
       search:                     new FormControl("",[Validators.required]),
@@ -123,6 +124,7 @@ export class AdesaocNgxTableComponent implements OnInit {
     this.ListarAdesoesConfirmada		= this.AuthGuard.getPermissao("ListarAdesoesConfirmada");
     this.ListarAdesoesNpreaprovada	= this.AuthGuard.getPermissao("ListarAdesoesNpreaprovada");
     this.ListarAdesoesNaprovada	    = this.AuthGuard.getPermissao("ListarAdesoesNaprovada");
+    this.ListarAdesoesScontato	    = this.AuthGuard.getPermissao("ListarAdesoesScontato");
     this.ListarAdesoesDocumentacao	= this.AuthGuard.getPermissao("ListarAdesoesDocumentacao");
     this.ListarAdesoesPreaprovada		= this.AuthGuard.getPermissao("ListarAdesoesPreaprovada");
     this.ListarAdesoesCancelada		  = this.AuthGuard.getPermissao("ListarAdesoesCancelada");
@@ -143,7 +145,7 @@ export class AdesaocNgxTableComponent implements OnInit {
       this.integracoes              = response.integracoes;
       this.filterForm.patchValue({ tipodeplano_id:  response.tiposdeplano[0].id });
     });
-  
+
   }
 
   selectionType()
@@ -170,44 +172,44 @@ export class AdesaocNgxTableComponent implements OnInit {
 
   podeAprovar()
   {
-    if (this.adesao.csituacao == 'P' || this.adesao.csituacao == 'E' || this.adesao.csituacao == 'M' || this.adesao.csituacao == 'X')
+    if (this.adesao.csituacao == 'P' || this.adesao.csituacao == 'E' || this.adesao.csituacao == 'M' || this.adesao.csituacao == 'X' || this.adesao.csituacao == 'SC')
     {
       return true;
     }
 
     return false;
-    
+
   }
 
   changePesquisarPor(pesquisarpor)
   {
-    
+
     this.filterForm.get('datainicio').clearValidators();
     this.filterForm.get('datafim').clearValidators();
     this.filterForm.get('csituacao').clearValidators();
     this.filterForm.get('search').clearValidators();
     this.filterForm.patchValue({ search: '' });
-    
+
     switch (pesquisarpor.value) {
-      case '': 
+      case '':
       {
         this.filterForm.get('datainicio').setValidators([Validators.required]);
         this.filterForm.get('datafim').setValidators([Validators.required]);
         this.filterForm.get('csituacao').setValidators([Validators.required]);
         break;
       }
-      case 'id': 
+      case 'id':
         this.titulo               = 'NºAdesão';
         this.filterForm.get('search').setValidators([Validators.required]);
         break;
-      case 'vendedor': 
+      case 'vendedor':
         this.titulo               = 'Vendedor';
         this.filterForm.get('datainicio').setValidators([Validators.required]);
         this.filterForm.get('datafim').setValidators([Validators.required]);
         this.filterForm.get('csituacao').setValidators([Validators.required]);
         this.filterForm.get('search').setValidators([Validators.required]);
         break;
-      case 'corretora': 
+      case 'corretora':
       {
         this.titulo               = 'Corretora';
         this.filterForm.get('datainicio').setValidators([Validators.required]);
@@ -222,7 +224,7 @@ export class AdesaocNgxTableComponent implements OnInit {
     this.filterForm.get('datafim').updateValueAndValidity();
     this.filterForm.get('csituacao').updateValueAndValidity();
     this.filterForm.get('search').updateValueAndValidity();
-   
+
   }
 
   clearAdesao() {
@@ -244,10 +246,10 @@ export class AdesaocNgxTableComponent implements OnInit {
   preaprovarAdesao()
   {
     var adesoess = [];
-    
+
     this.selectedAdesao.forEach(function(adesao) {
       adesoess.push(adesao.id);
-    }); 
+    });
 
     let form  =  {
       adesoes: adesoess
@@ -278,10 +280,10 @@ export class AdesaocNgxTableComponent implements OnInit {
   {
 
     var adesoess = [];
-    
+
     this.selectedAdesao.forEach(function(adesao) {
       adesoess.push(adesao.id);
-    }); 
+    });
 
     let form  =  {
       adesoes: adesoess
@@ -313,10 +315,10 @@ export class AdesaocNgxTableComponent implements OnInit {
   implantarAdesao()
   {
     var adesoess = [];
-    
+
     this.selectedAdesao.forEach(function(adesao) {
       adesoess.push(adesao.id);
-    }); 
+    });
 
     let form  =  {
       adesoes: adesoess
@@ -344,11 +346,11 @@ export class AdesaocNgxTableComponent implements OnInit {
 
   }
 
-  pesquisarAdesoes(offset = 0) 
+  pesquisarAdesoes(offset = 0)
   {
 
     offset = offset + 1;
-   
+
     this.pagina  = offset;
 
     const pesquisa = {
@@ -380,9 +382,9 @@ export class AdesaocNgxTableComponent implements OnInit {
       });
   }
 
-  refreshAdesoes() 
+  refreshAdesoes()
   {
-    
+
     const pesquisa = {
       orderby:    this.orderby,
       direction:  this.direction,
@@ -412,7 +414,7 @@ export class AdesaocNgxTableComponent implements OnInit {
       });
   }
 
-  exportarAdesoes() 
+  exportarAdesoes()
   {
     this.loader.open();
     const pesquisa = {
@@ -435,7 +437,7 @@ export class AdesaocNgxTableComponent implements OnInit {
        });
   }
 
-  exportarAdesoesIntegracao() 
+  exportarAdesoesIntegracao()
   {
     this.loader.open();
     const pesquisa = {
@@ -461,9 +463,9 @@ export class AdesaocNgxTableComponent implements OnInit {
   toggleExpandRow(row) {
     this.TableAdesao.rowDetail.toggleExpandRow(row);
   }
-  
+
   onDetailToggle(event) {
-    
+
   }
 
   formatarData(data) {
@@ -494,7 +496,7 @@ export class AdesaocNgxTableComponent implements OnInit {
 
   }
 /*
-  implantarContrato(id)  
+  implantarContrato(id)
   {
     this.loader.open();
 
@@ -580,7 +582,7 @@ export class AdesaocNgxTableComponent implements OnInit {
       this.beneficiario_id        = selected[selected.length-1].beneficiarios[0].id;
       this.beneficiarios          = selected[selected.length-1].beneficiarios;
     }
-    
+
   }
 
   onClickAdesao(row) {
@@ -588,7 +590,7 @@ export class AdesaocNgxTableComponent implements OnInit {
       this.id                     = row.id;
       this.adesao                 = row;
       this.selectedVal            = 'Plano';
-    
+
       this.adesoes.forEach(select => {
         if (this.id == select.id)
         {
@@ -626,17 +628,17 @@ export class AdesaocNgxTableComponent implements OnInit {
       case 'C':
        return 'blue';
       case 'E':
-       return 'purple'; 
+       return 'purple';
       case 'X':
-       return 'red'; 
+       return 'red';
       case 'P':
-       return 'green'; 
+       return 'green';
       case 'A':
-        return 'indigo';   
+        return 'indigo';
       case 'M':
-        return 'navy';   
+        return 'navy';
       case 'D':
-        return 'orange';          
+        return 'orange';
       default:
         return 'black';
     }
