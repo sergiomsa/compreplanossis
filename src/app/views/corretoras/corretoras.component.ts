@@ -9,7 +9,6 @@ import { Subscription } from 'rxjs';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { CustomValidators } from 'ng2-validation';
-import { truncate } from 'fs';
 
 @Component({
   selector: 'app-corretoras',
@@ -22,7 +21,6 @@ import { truncate } from 'fs';
   ]
 })
 export class CorretorasComponent implements OnInit {
-
 
   public id: number;
   public filterForm: FormGroup;

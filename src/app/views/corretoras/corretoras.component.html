@@ -205,7 +205,7 @@
     <mat-card-content class="p-0">
       <ngx-datatable class="material ml-0 mr-0" [rows]="corretoras" [columnMode]="'flex'" [headerHeight]="50"
         [footerHeight]="50" [externalPaging]="true" [count]="page_totalElements" [offset]="page_pageNumber" [limit]="page_size"
-        (page)='paginacao($event)' [rowHeight]="'auto'">
+        (page)='paginacao($event)' [rowHeight]="40">
         <ngx-datatable-column name="CNPJ" [flexGrow]="1">
           <ng-template let-row="row" ngx-datatable-cell-template>
             {{ row?.cnpj }}
